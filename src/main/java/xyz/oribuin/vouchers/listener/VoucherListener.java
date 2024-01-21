@@ -25,7 +25,7 @@ public class VoucherListener implements Listener {
         if (voucher == null) return;
 
         event.setCancelled(true);
-        
+
         if (voucher.redeem(event.getPlayer())) {
             event.getItem().setAmount(event.getItem().getAmount() - 1);
         }
