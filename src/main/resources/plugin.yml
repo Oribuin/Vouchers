@@ -1,6 +1,12 @@
-name: MyPlugin
-main: dev.rosewood.myplugin.MyPlugin
+name: Vouchers
+main: xyz.oribuin.vouchers.VoucherPlugin
 version: '@version@'
-api-version: '1.16'
-author: Rosewood-Development
-description: A plugin that does stuff
+api-version: '1.17'
+author: Oribuin
+description: a silly little vouchers plugin
+libraries:
+  - "net.kyori:adventure-api:4.11.0"
+  - "net.kyori:adventure-text-serializer-legacy:4.11.0"
+  - "net.kyori:adventure-text-serializer-gson:4.11.0"
+softdepend:
+  - PlaceholderAPI

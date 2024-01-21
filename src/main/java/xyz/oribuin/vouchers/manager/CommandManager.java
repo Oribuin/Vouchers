@@ -1,6 +1,6 @@
-package dev.rosewood.myplugin.manager;
+package xyz.oribuin.vouchers.manager;
 
-import dev.rosewood.myplugin.command.ExampleCommandWrapper;
+import xyz.oribuin.vouchers.command.VoucherCommandWrapper;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.command.framework.RoseCommandWrapper;
 import dev.rosewood.rosegarden.manager.AbstractCommandManager;
@@ -15,7 +15,7 @@ public class CommandManager extends AbstractCommandManager {
 
     @Override
     public List<Class<? extends RoseCommandWrapper>> getRootCommands() {
-        return List.of(ExampleCommandWrapper.class);
+        return List.of(VoucherCommandWrapper.class);
     }
 
     @Override

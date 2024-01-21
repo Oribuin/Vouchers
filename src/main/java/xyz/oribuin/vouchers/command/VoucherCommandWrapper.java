@@ -1,29 +1,29 @@
-package dev.rosewood.myplugin.command;
+package xyz.oribuin.vouchers.command;
 
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.command.framework.RoseCommandWrapper;
 
 import java.util.List;
 
-public class ExampleCommandWrapper extends RoseCommandWrapper {
+public class VoucherCommandWrapper extends RoseCommandWrapper {
 
-    public ExampleCommandWrapper(RosePlugin rosePlugin) {
+    public VoucherCommandWrapper(RosePlugin rosePlugin) {
         super(rosePlugin);
     }
 
     @Override
     public String getDefaultName() {
-        return "example";
+        return "vouchers";
     }
 
     @Override
     public List<String> getDefaultAliases() {
-        return List.of("ex");
+        return List.of("vouch");
     }
 
     @Override
     public List<String> getCommandPackages() {
-        return List.of("dev.rosewood.myplugin.command.command");
+        return List.of("xyz.oribuin.vouchers.command.command");
     }
 
     @Override

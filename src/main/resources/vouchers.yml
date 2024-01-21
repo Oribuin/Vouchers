@@ -1,0 +1,22 @@
+# Configure your vouchers here
+# Available Requirement Types: [permission, experience, operator]
+vouchers:
+  vip-rank:
+    item:
+      material: DIAMOND
+      name: '&#b00b1eVIP Rank'
+      lore:
+        - ''
+        - '&f| &7This voucher will give you'
+        - '&f| &7the VIP rank for 1 hour!'
+        - ''
+      amount: 1
+      glow: true
+    requirement-min: 1 # The amount of requirements needed to meet to redeem the voucher
+    requirements:
+      no-vip: # The name of the requirement
+        type: !permission # The type of requirement
+        input: 'groups.vip' # The input of the requirement
+    commands:
+      - '[console] lp user %player_name% addtemp vip 1h'
+      - '[message] &aYou now have VIP Rank for an hour!'
