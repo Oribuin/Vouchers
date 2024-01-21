@@ -1,8 +1,12 @@
 package xyz.oribuin.vouchers.requirement;
 
+import xyz.oribuin.vouchers.requirement.impl.EqualsRequirement;
 import xyz.oribuin.vouchers.requirement.impl.ExpRequirement;
 import xyz.oribuin.vouchers.requirement.impl.MathRequirement;
+import xyz.oribuin.vouchers.requirement.impl.MoneyRequirement;
 import xyz.oribuin.vouchers.requirement.impl.PermissionRequirement;
+import xyz.oribuin.vouchers.requirement.impl.PointsRequirement;
+import xyz.oribuin.vouchers.requirement.impl.RegexRequirement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -11,7 +15,11 @@ public enum RequirementType {
     PERMISSION("permission", PermissionRequirement.class),
     EXP("exp", ExpRequirement.class),
     MATH("math", MathRequirement.class),
-    ;
+    EQUALS("equals", EqualsRequirement.class),
+    HAS_MONEY("has money", MoneyRequirement.class),
+    HAS_POINTS("has points", PointsRequirement.class),
+    REGEX("regex", RegexRequirement.class);
+
     private final String name;
     private final Class<? extends Requirement> clazz;
 
@@ -27,7 +35,7 @@ public enum RequirementType {
      * @param input The input for the requirement.
      * @return The requirement object.
      */
-    public static Requirement create(String name, Object input) {
+    public static Requirement create(String name, Object input, Object output) {
         boolean inverted = name.startsWith("!");
 
         if (inverted) {
@@ -41,7 +49,7 @@ public enum RequirementType {
                 .orElseThrow(() -> new IllegalArgumentException("Invalid requirement type: " + finalName));
 
         try {
-            return type.clazz.getConstructor(Object.class, boolean.class).newInstance(input, inverted);
+            return type.clazz.getConstructor(Object.class, Object.class, boolean.class).newInstance(input, output, inverted);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
             throw new RuntimeException(e);
         }

@@ -10,3 +10,5 @@ libraries:
   - "net.kyori:adventure-text-serializer-gson:4.11.0"
 softdepend:
   - PlaceholderAPI
+  - Vault
+  - PlayerPoints
