@@ -1,13 +1,17 @@
 package xyz.oribuin.vouchers.model;
 
+import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import xyz.oribuin.vouchers.VoucherPlugin;
 import xyz.oribuin.vouchers.action.ActionType;
+import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.requirement.Requirement;
+import xyz.oribuin.vouchers.util.VoucherUtils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,6 +25,8 @@ public class Voucher {
     private List<Requirement> requirements;
     private List<String> commands;
     private int requirementMin;
+    private long cooldown;
+    private List<String> cooldownActions;
 
     /**
      * Create a new voucher object for caching.
@@ -34,6 +40,8 @@ public class Voucher {
         this.requirements = new ArrayList<>();
         this.requirementMin = -1;
         this.commands = new ArrayList<>();
+        this.cooldown = 0;
+        this.cooldownActions = new ArrayList<>();
     }
 
     /**
@@ -54,6 +62,18 @@ public class Voucher {
      * @param player The player to redeem the voucher for.
      */
     public boolean redeem(Player player) {
+        VoucherManager manager = VoucherPlugin.get().getManager(VoucherManager.class);
+
+        // Check if the player is on cooldown
+        long cooldown = manager.getCooldown(player.getUniqueId(), this);
+        if (cooldown > 0) {
+            ActionType.run(player, this.cooldownActions, StringPlaceholders.of(
+                    "cooldown", VoucherUtils.formatTime(cooldown)
+            ));
+            return false;
+        }
+
+        // Check if the player meets the requirements
         if (!this.requirements.isEmpty()) {
             int evaluated = (int) this.requirements.stream().filter(x -> x.evaluate(player)).count();
 
@@ -64,7 +84,14 @@ public class Voucher {
             if (evaluated < this.requirementMin) return false;
         }
 
+        // Run all the commands and actions
         ActionType.run(player, this.commands);
+
+        // Add the cooldown
+        if (this.cooldown > 0) {
+            manager.addCooldown(player.getUniqueId(), this);
+        }
+
         return true;
     }
 
@@ -115,4 +142,21 @@ public class Voucher {
         this.requirementMin = requirementMin;
     }
 
+    public long getCooldown() {
+        return cooldown;
+    }
+
+    public void setCooldown(long cooldown) {
+        this.cooldown = cooldown;
+    }
+
+    public List<String> getCooldownActions() {
+        return cooldownActions;
+    }
+
+    public void setCooldownActions(List<String> cooldownActions) {
+        this.cooldownActions = cooldownActions;
+    }
+
 }
+
