@@ -40,7 +40,7 @@ public class MathRequirement extends Requirement {
             case "==" -> num1 == num2;
             case "!=" -> num1 != num2;
             case "pow" -> num1 == Math.pow(num1, num2);
-            case "sqrt" -> num1 == Math.sqrt(num1);
+            case "sqrt" -> num1 == Math.sqrt(num2);
             default -> throw new IllegalStateException("Unexpected value: " + split[1]);
         };
     }
