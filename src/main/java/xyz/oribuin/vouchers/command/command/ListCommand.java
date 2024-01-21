@@ -15,6 +15,12 @@ import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
 import org.bukkit.inventory.ItemStack;
 import xyz.oribuin.vouchers.manager.VoucherManager;
+import xyz.oribuin.vouchers.model.Voucher;
+
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
+import java.util.stream.Collectors;
 
 public class ListCommand extends RoseCommand {
 
@@ -35,7 +41,12 @@ public class ListCommand extends RoseCommand {
         for (int i = 0; i < 9; i++) gui.setItem(i, border);
         for (int i = 36; i < 44; i++) gui.setItem(i, border);
 
-        manager.getVouchers().forEach((string, voucher) -> {
+        List<Voucher> vouchers = new ArrayList<>(manager.getVouchers().values());
+        vouchers = vouchers.stream()
+                .sorted(Comparator.comparing(Voucher::getId))
+                .collect(Collectors.toList());
+
+        vouchers.forEach(voucher -> {
             ItemStack item = voucher.getDisplay();
 
             GuiItem guiItem = ItemBuilder.from(item).asGuiItem(event -> event
