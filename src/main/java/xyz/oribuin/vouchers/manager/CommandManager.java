@@ -20,7 +20,7 @@ public class CommandManager extends AbstractCommandManager {
 
     @Override
     public List<String> getArgumentHandlerPackages() {
-        return List.of("dev.rosewood.myplugin.command.argument");
+        return List.of("xyz.oribuin.vouchers.command.argument");
     }
 
 }
