@@ -3,7 +3,9 @@ package xyz.oribuin.vouchers.requirement;
 import xyz.oribuin.vouchers.requirement.impl.EqualsRequirement;
 import xyz.oribuin.vouchers.requirement.impl.ExpRequirement;
 import xyz.oribuin.vouchers.requirement.impl.MathRequirement;
+import xyz.oribuin.vouchers.requirement.impl.MoneyRequirement;
 import xyz.oribuin.vouchers.requirement.impl.PermissionRequirement;
+import xyz.oribuin.vouchers.requirement.impl.PointsRequirement;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
@@ -12,8 +14,10 @@ public enum RequirementType {
     PERMISSION("permission", PermissionRequirement.class),
     EXP("exp", ExpRequirement.class),
     MATH("math", MathRequirement.class),
-    EQUALS("equals", EqualsRequirement.class)
-    ;
+    EQUALS("equals", EqualsRequirement.class),
+    HAS_MONEY("has money", MoneyRequirement.class),
+    HAS_POINTS("has points", PointsRequirement.class);
+
     private final String name;
     private final Class<? extends Requirement> clazz;
 
