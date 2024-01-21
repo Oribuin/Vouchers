@@ -12,3 +12,24 @@ softdepend:
   - PlaceholderAPI
   - Vault
   - PlayerPoints
+permissions:
+  vouchers.*:
+    description: Gives access to all vouchers commands
+    default: op
+    children:
+      vouchers.use: true
+      vouchers.give: true
+      vouchers.reload: true
+      vouchers.list: true
+  vouchers.use:
+    description: Use the plugin command
+    default: true
+  vouchers.give:
+    description: Give a player a voucher item
+    default: op
+  vouchers.reload:
+    description: Reload the plugin
+    default: op
+  vouchers.list:
+    description: Allows the player to view and grab any voucher
+    default: op
