@@ -24,8 +24,10 @@ public class VoucherListener implements Listener {
         Voucher voucher = this.plugin.getManager(VoucherManager.class).getVoucher(event.getItem());
         if (voucher == null) return;
 
-        event.getItem().setAmount(event.getItem().getAmount() - 1);
-        voucher.redeem(event.getPlayer());
+        if (voucher.redeem(event.getPlayer())) {
+            event.getItem().setAmount(event.getItem().getAmount() - 1);
+            event.setCancelled(true);
+        }
     }
 
 }

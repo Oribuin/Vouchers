@@ -59,15 +59,17 @@ public class Voucher {
      *
      * @param player The player to redeem the voucher for.
      */
-    public void redeem(Player player) {
+    public boolean redeem(Player player) {
         int evaluated = (int) this.requirements.stream().filter(x -> x.evaluate(player)).count();
 
         if (this.requirementMin == -1) {
             this.requirementMin = this.requirements.size();
         }
 
-        if (evaluated < this.requirementMin) return;
+        if (evaluated < this.requirementMin) return false;
         ActionType.run(player, this.commands);
+
+        return true;
     }
 
     /**
