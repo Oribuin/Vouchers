@@ -11,6 +11,7 @@ import xyz.oribuin.vouchers.requirement.Requirement;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public class Voucher {
 
@@ -43,12 +44,6 @@ public class Voucher {
      */
     public void give(Player player, int amt) {
         ItemStack item = this.display.clone();
-        ItemMeta meta = item.getItemMeta();
-        if (meta == null) return;
-
-        PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(DATA_KEY, PersistentDataType.STRING, this.id.toLowerCase());
-        item.setItemMeta(meta);
         item.setAmount(amt);
 
         player.getInventory().addItem(item);
@@ -60,15 +55,17 @@ public class Voucher {
      * @param player The player to redeem the voucher for.
      */
     public boolean redeem(Player player) {
-        int evaluated = (int) this.requirements.stream().filter(x -> x.evaluate(player)).count();
+        if (!this.requirements.isEmpty()) {
+            int evaluated = (int) this.requirements.stream().filter(x -> x.evaluate(player)).count();
 
-        if (this.requirementMin == -1) {
-            this.requirementMin = this.requirements.size();
+            if (this.requirementMin <= 0) {
+                this.requirementMin = this.requirements.size();
+            }
+
+            if (evaluated < this.requirementMin) return false;
         }
 
-        if (evaluated < this.requirementMin) return false;
         ActionType.run(player, this.commands);
-
         return true;
     }
 

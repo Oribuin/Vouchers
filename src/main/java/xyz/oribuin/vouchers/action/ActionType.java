@@ -36,7 +36,8 @@ public enum ActionType {
                 throw new IllegalArgumentException("Invalid action type: " + command);
             }
 
-            type.get().run(player, command.substring(command.indexOf("]") + 1));
+            String content = command.substring(command.indexOf("]") + 2); // remove "[action] ", todo: make removing the whitespace optional
+            type.get().run(player, content);
         }
     }
 

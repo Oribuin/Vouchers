@@ -68,7 +68,7 @@ public class VoucherManager extends Manager {
 
         // Load all the requirements from the config
         List<Requirement> requirements = new ArrayList<>();
-        ConfigurationSection requirementSection = section.getConfigurationSection("requirements");
+        ConfigurationSection requirementSection = section.getConfigurationSection(key + ".requirements");
         if (requirementSection != null) {
             requirementSection.getKeys(false).forEach(id -> {
                 CommentedConfigurationSection requirementConfig = section.getConfigurationSection("requirements." + id);
@@ -90,8 +90,8 @@ public class VoucherManager extends Manager {
         }
 
         // Load all the basic easy values from the config
-        voucher.setRequirementMin(section.getInt("requirement-min", requirements.size()));
-        voucher.setCommands(section.getStringList("commands"));
+        voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
+        voucher.setCommands(section.getStringList(key + ".commands"));
 
         this.vouchers.put(key.toLowerCase(), voucher);
     }
