@@ -25,6 +25,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -71,7 +72,7 @@ public final class VoucherUtils {
             @NotNull String key,
             @NotNull StringPlaceholders placeholders
     ) {
-        final LocaleManager locale = VoucherPlugin.getInstance().getManager(LocaleManager.class);
+        final LocaleManager locale = VoucherPlugin.get().getManager(LocaleManager.class);
         final Material material = Material.getMaterial(locale.format(sender, section.getString(key + ".material"), placeholders), false);
         if (material == null) return null;
 
@@ -185,6 +186,64 @@ public final class VoucherUtils {
         }
 
         return file;
+    }
+
+    /**
+     * Convert a string to a duration
+     *
+     * @param input The input string
+     * @return The duration
+     */
+    public static Duration getTime(String input) {
+        if (input == null || input.isEmpty()) return Duration.ZERO;
+
+        long seconds = 0;
+        long minutes = 0;
+        long hours = 0;
+        long days = 0;
+
+        String[] split = input.split(" ");
+        for (String s : split) {
+            if (s.endsWith("s")) {
+                seconds += toInt(s.replace("s", ""));
+            } else if (s.endsWith("m")) {
+                minutes += toInt(s.replace("m", ""));
+            } else if (s.endsWith("h")) {
+                hours += toInt(s.replace("h", ""));
+            } else if (s.endsWith("d")) {
+                days += toInt(s.replace("d", ""));
+            }
+        }
+
+        return Duration.ofSeconds(seconds).plusMinutes(minutes).plusHours(hours).plusDays(days);
+
+    }
+
+    /**
+     * Format a time in milliseconds into a string
+     *
+     * @param time Time in milliseconds
+     * @return Formatted time
+     */
+    public static String formatTime(long time) {
+        long totalSeconds = time / 1000;
+        if (totalSeconds <= 0) return "";
+
+        long days = (int) Math.floor(totalSeconds / 86400.0);
+        totalSeconds %= 86400;
+
+        long hours = (int) Math.floor(totalSeconds / 3600.0);
+        totalSeconds %= 3600;
+
+        long minutes = (int) Math.floor(totalSeconds / 60.0);
+        long seconds = (totalSeconds % 60);
+
+        final StringBuilder builder = new StringBuilder();
+        if (days > 0) builder.append(days).append("d, ");
+        if (hours > 0) builder.append(hours).append("h, ");
+        if (minutes > 0) builder.append(minutes).append("m, ");
+        if (seconds > 0) builder.append(seconds).append("s");
+        return builder.toString();
     }
 
 }
