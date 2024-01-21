@@ -3,6 +3,8 @@ package xyz.oribuin.vouchers.requirement.impl;
 import org.bukkit.entity.Player;
 import xyz.oribuin.vouchers.requirement.Requirement;
 
+import java.util.Objects;
+
 public class MathRequirement extends Requirement {
 
     public MathRequirement(Object input, boolean inverted) {
@@ -11,7 +13,9 @@ public class MathRequirement extends Requirement {
 
     @Override
     public boolean evaluate(Player player) {
-        String input = this.inputAsPlaceholder(player);
+        Objects.requireNonNull(this.input, "An input must be provided for the Math Requirement.");
+
+        String input = this.parse(player, this.input);
         if (input == null) return false;
 
         String[] split = input.split(" ");

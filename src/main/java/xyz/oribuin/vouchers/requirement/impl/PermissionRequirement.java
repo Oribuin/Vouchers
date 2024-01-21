@@ -3,6 +3,8 @@ package xyz.oribuin.vouchers.requirement.impl;
 import org.bukkit.entity.Player;
 import xyz.oribuin.vouchers.requirement.Requirement;
 
+import java.util.Objects;
+
 public class PermissionRequirement extends Requirement {
 
     public PermissionRequirement(Object input, boolean inverted) {
@@ -11,9 +13,12 @@ public class PermissionRequirement extends Requirement {
 
     @Override
     public boolean evaluate(Player player) {
-        if (!(this.input instanceof String result)) return false;
+        Objects.requireNonNull(this.input, "An input must be provided for the Permission Requirement.");
 
-        return this.inverted != player.hasPermission(result);
+        String input = this.parse(player, this.input);
+        if (input == null) return false;
+
+        return this.inverted != player.hasPermission(input);
     }
 
 }

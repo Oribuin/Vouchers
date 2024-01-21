@@ -3,6 +3,8 @@ package xyz.oribuin.vouchers.requirement.impl;
 import org.bukkit.entity.Player;
 import xyz.oribuin.vouchers.requirement.Requirement;
 
+import java.util.Objects;
+
 public class ExpRequirement extends Requirement {
 
     public ExpRequirement(Object input, boolean inverted) {
@@ -11,7 +13,10 @@ public class ExpRequirement extends Requirement {
 
     @Override
     public boolean evaluate(Player player) {
-        if (!(this.input instanceof String result)) return false;
+        Objects.requireNonNull(this.input, "An input must be provided for the Experience Requirement.");
+
+        String result = this.parse(player, this.input);
+        if (input == null) return false;
 
         // Check if the requirement is a level requirement.
         boolean levelRequirement = result.endsWith("L");

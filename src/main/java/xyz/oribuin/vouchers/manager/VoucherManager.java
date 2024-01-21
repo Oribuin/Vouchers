@@ -95,13 +95,14 @@ public class VoucherManager extends Manager {
                 requirementSection.getKeys(false).forEach(id -> {
                     String type = requirementSection.getString(id + ".type");
                     Object input = requirementSection.get(id + ".input");
+                    Object output = requirementSection.get(id + ".output");
 
                     if (type == null || input == null) {
                         this.rosePlugin.getLogger().warning("Unable to load requirement '" + id + "' for voucher '" + id + "'. Invalid type or input.");
                         return;
                     }
 
-                    Requirement requirement = RequirementType.create(type, input);
+                    Requirement requirement = RequirementType.create(type, input, output);
                     requirements.add(requirement);
                 });
 
