@@ -78,4 +78,9 @@ public class ListCommand extends RoseCommand {
         return "vouchers.list";
     }
 
+    @Override
+    public boolean isPlayerOnly() {
+        return true;
+    }
+
 }
