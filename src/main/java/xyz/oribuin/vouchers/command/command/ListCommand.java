@@ -31,8 +31,8 @@ public class ListCommand extends RoseCommand {
                 .create();
 
         VoucherManager manager = this.rosePlugin.getManager(VoucherManager.class);
-        GuiItem border = ItemBuilder.from(Material.BLACK_STAINED_GLASS).name(Component.text(" ")).asGuiItem();
-        for (int i = 0; i < 8; i++) gui.setItem(i, border);
+        GuiItem border = ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem();
+        for (int i = 0; i < 9; i++) gui.setItem(i, border);
         for (int i = 36; i < 44; i++) gui.setItem(i, border);
 
         manager.getVouchers().forEach((string, voucher) -> {
