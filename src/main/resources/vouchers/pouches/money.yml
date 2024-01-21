@@ -1,0 +1,48 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!! THIS IS AN EXAMPLE FILE  !!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# This example file uses PlaceholderAPI's RNG Expansion to give the player a random amount of money.
+small-money-pouch:
+  item:
+    material: SUNFLOWER
+    name: '&eSmall Money Pouch'
+    lore:
+      - ''
+      - '&f| &7This voucher will give you'
+      - '&f| &7a small amount of money!'
+      - '&f| &7[1,000 - 5,000]'
+      - ''
+    amount: 1
+    glow: true
+  commands:
+    - '[console] eco give %player_name% %rng_1000,5000%'
+
+medium-money-pouch:
+  item:
+    material: SUNFLOWER
+    name: '&eMedium Money Pouch'
+    lore:
+      - ''
+      - '&f| &7This voucher will give you'
+      - '&f| &7a medium amount of money!'
+      - '&f| &7[5,000 - 10,000]'
+      - ''
+    amount: 1
+    glow: true
+  commands:
+    - '[console] eco give %player_name% %rng_5000,10000%'
+
+large-money-pouch:
+  item:
+    material: SUNFLOWER
+    name: '&eLarge Money Pouch'
+    lore:
+      - ''
+      - '&f| &7This voucher will give you'
+      - '&f| &7a large amount of money!'
+      - '&f| &7[10,000 - 15,000]'
+      - ''
+    amount: 1
+    glow: true
+  commands:
+    - '[console] eco give %player_name% %rng_10000,15000%'

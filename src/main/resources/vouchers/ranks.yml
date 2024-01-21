@@ -1,0 +1,27 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!! THIS IS AN EXAMPLE FILE  !!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+vip-rank:
+  item: # The item that will be given to the player
+    material: DIAMOND
+    name: '&#b00b1eVIP Rank'
+    lore:
+      - ''
+      - '&f| &7This voucher will give you'
+      - '&f| &7the VIP rank for 1 hour!'
+      - ''
+    amount: 1
+    glow: true
+  requirement-min: 1 # The amount of requirements needed to meet to redeem the voucher
+  cooldown: 1h # The cooldown of the voucher (1h = 1 hour, 1m = 1 minute, 1s = 1 second)
+  on-cooldown: # The commands that will be executed if the player is on cooldown
+    - '[message] &cYou can use this again in %cooldown%!'
+  deny-commands: # If the player does not meet the requirements, these commands will be executed
+    - '[message] &cYou already have the VIP Rank!'
+  requirements:
+    no-vip: # The name of the requirement
+      type: '!permission' # The type of requirement
+      input: 'groups.vip' # The input of the requirement
+  commands: # The commands that will be executed if the player meets the requirements
+    - '[console] lp user %player_name% parent addtemp vip 1h'
+    - '[message] &aYou now have VIP Rank for an hour!'

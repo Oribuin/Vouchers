@@ -1,0 +1,48 @@
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# !!!! THIS IS AN EXAMPLE FILE  !!
+# !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+# This example file uses PlaceholderAPI's RNG Expansion to give the player a random amount of exp
+small-exp-pouch:
+  item:
+    material: SUNFLOWER
+    name: '&eSmall EXP Pouch'
+    lore:
+      - ''
+      - '&f| &7This voucher will give you'
+      - '&f| &7a small amount of exp!'
+      - '&f| &7[100 - 500]'
+      - ''
+    amount: 1
+    glow: true
+  commands:
+    - '[console] exp give %player_name% %rng_100,500%'
+
+medium-exp-pouch:
+  item:
+    material: SUNFLOWER
+    name: '&eMedium EXP Pouch'
+    lore:
+      - ''
+      - '&f| &7This voucher will give you'
+      - '&f| &7a medium amount of exp!'
+      - '&f| &7[500 - 1000]'
+      - ''
+    amount: 1
+    glow: true
+  commands:
+    - '[console] exp give %player_name% %rng_500,1000%'
+
+large-exp-pouch:
+  item:
+    material: SUNFLOWER
+    name: '&eLarge EXP Pouch'
+    lore:
+      - ''
+      - '&f| &7This voucher will give you'
+      - '&f| &7a large amount of exp!'
+      - '&f| &7[1000 - 1500]'
+      - ''
+    amount: 1
+    glow: true
+  commands:
+    - '[console] exp give %player_name% %rng_1000,1500%'

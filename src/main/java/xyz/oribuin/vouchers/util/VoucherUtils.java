@@ -246,4 +246,38 @@ public final class VoucherUtils {
         return builder.toString();
     }
 
+
+    /**
+     * Create a file in a folder from the plugin's resources
+     *
+     * @param rosePlugin The plugin
+     * @param folders    The folders
+     * @return The file
+     */
+    @NotNull
+    public static File createFile(@NotNull RosePlugin rosePlugin, @NotNull String... folders) {
+        File file = new File(rosePlugin.getDataFolder(), String.join("/", folders)); // Create the file
+        if (file.exists())
+            return file;
+
+        if (!file.getParentFile().exists()) {
+            file.getParentFile().mkdirs();
+        }
+
+        String path = String.join("/", folders);
+        try (InputStream stream = rosePlugin.getResource(path)) {
+            if (stream == null) {
+                file.createNewFile();
+                return file;
+            }
+
+            Files.copy(stream, Paths.get(file.getAbsolutePath()));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return file;
+    }
+
+
 }

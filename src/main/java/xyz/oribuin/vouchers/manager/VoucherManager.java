@@ -6,6 +6,7 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import dev.rosewood.rosegarden.manager.Manager;
+import dev.rosewood.rosegarden.manager.PluginUpdateManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -18,6 +19,7 @@ import xyz.oribuin.vouchers.util.VoucherUtils;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -36,71 +38,89 @@ public class VoucherManager extends Manager {
     public void reload() {
         this.vouchers.clear();
 
+        VoucherUtils.createFile(this.rosePlugin, "vouchers", "ranks.yml");
+        VoucherUtils.createFile(this.rosePlugin, "vouchers", "pouches", "experience.yml");
+        VoucherUtils.createFile(this.rosePlugin, "vouchers", "pouches", "money.yml");
+
         // Load all the vouchers from the config
-        File voucherFile = VoucherUtils.createFile(this.rosePlugin, "vouchers.yml");
-        CommentedFileConfiguration voucherConfig = CommentedFileConfiguration.loadConfiguration(voucherFile);
-        CommentedConfigurationSection voucherSection = voucherConfig.getConfigurationSection("vouchers");
-        if (voucherSection == null) {
-            this.rosePlugin.getLogger().warning("Unable to load vouchers from config. No vouchers section found.");
-            return;
+        File vouchersFolder = new File(this.rosePlugin.getDataFolder(), "vouchers");
+        if (!vouchersFolder.exists()) {
+            vouchersFolder.mkdirs();
         }
 
-        List<String> keys = new ArrayList<>(voucherSection.getKeys(false));
-        if (keys.isEmpty()) {
-            this.rosePlugin.getLogger().warning("Unable to load vouchers from config. No vouchers found.");
-            return;
-        }
+        this.loadFolder(vouchersFolder);
 
-        keys.forEach(key -> this.load(voucherSection, key));
+        // Load all the vouchers inside the folders within the original folder
+        File[] folders = vouchersFolder.listFiles();
+        if (folders == null) return;
+
+        Arrays.stream(folders).filter(File::isDirectory).forEach(this::loadFolder);
     }
 
     /**
-     * Load a voucher from a configuration section and cache it.
+     * Load all of the vouchers from a folder.
      *
-     * @param section The configuration section to load from.
+     * @param folder The folder to load from.
      */
-    public void load(CommentedConfigurationSection section, String key) {
-        ItemStack display = VoucherUtils.deserialize(section, key + ".item");
+    public void loadFolder(File folder) {
+        if (!folder.exists() || !folder.isDirectory()) return;
+        File[] files = folder.listFiles();
+        if (files == null) return;
 
-        if (display == null) {
-            this.rosePlugin.getLogger().warning("Unable to load voucher item with key '" + key + "'.");
-            return;
-        }
+        Arrays.stream(files).filter(file -> file.getName().endsWith(".yml")).forEach(this::load);
+    }
 
-        // Load all the basic easy values from the config
-        Voucher voucher = new Voucher(key, display);
+    /**
+     * Load a voucher from a file and cache it.
+     *
+     * @param file The file to load from.
+     */
+    public void load(File file) {
+        CommentedConfigurationSection section = CommentedFileConfiguration.loadConfiguration(file);
+        section.getKeys(false).forEach(key -> {
+            ItemStack display = VoucherUtils.deserialize(section, key + ".item");
 
-        // Load all the requirements from the config
-        List<Requirement> requirements = new ArrayList<>();
-        ConfigurationSection requirementSection = section.getConfigurationSection(key + ".requirements");
-        if (requirementSection != null) {
-            requirementSection.getKeys(false).forEach(id -> {
-                CommentedConfigurationSection requirementConfig = section.getConfigurationSection("requirements." + id);
-                if (requirementConfig == null) return;
+            if (display == null) {
+                this.rosePlugin.getLogger().warning("Unable to load voucher item with key '" + key + "'.");
+                return;
+            }
 
-                String type = requirementConfig.getString("type");
-                Object input = requirementConfig.get("input");
+            // Load all the basic easy values from the config
+            Voucher voucher = new Voucher(key, display);
 
-                if (type == null || input == null) {
-                    this.rosePlugin.getLogger().warning("Unable to load requirement '" + id + "' for voucher '" + id + "'. Invalid type or input.");
-                    return;
-                }
+            // Load all the requirements from the config
+            List<Requirement> requirements = new ArrayList<>();
+            ConfigurationSection requirementSection = section.getConfigurationSection(key + ".requirements");
+            if (requirementSection != null) {
+                requirementSection.getKeys(false).forEach(id -> {
+                    CommentedConfigurationSection requirementConfig = section.getConfigurationSection("requirements." + id);
+                    if (requirementConfig == null) return;
 
-                Requirement requirement = RequirementType.create(type, input);
-                requirements.add(requirement);
-            });
+                    String type = requirementConfig.getString("type");
+                    Object input = requirementConfig.get("input");
 
-            voucher.setRequirements(requirements);
-            voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
-        }
+                    if (type == null || input == null) {
+                        this.rosePlugin.getLogger().warning("Unable to load requirement '" + id + "' for voucher '" + id + "'. Invalid type or input.");
+                        return;
+                    }
 
-        // Load all the basic easy values from the config
-        voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
-        voucher.setCommands(section.getStringList(key + ".commands"));
-        voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
-        voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
+                    Requirement requirement = RequirementType.create(type, input);
+                    requirements.add(requirement);
+                });
 
-        this.vouchers.put(key.toLowerCase(), voucher);
+                voucher.setRequirements(requirements);
+                voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
+            }
+
+            // Load all the basic easy values from the config
+            voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
+            voucher.setCommands(section.getStringList(key + ".commands"));
+            voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
+            voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
+
+            this.vouchers.put(key.toLowerCase(), voucher);
+        });
+
     }
 
     /**
