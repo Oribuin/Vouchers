@@ -2,6 +2,8 @@ package xyz.oribuin.vouchers;
 
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.manager.Manager;
+import org.bukkit.Bukkit;
+import xyz.oribuin.vouchers.listener.VoucherListener;
 import xyz.oribuin.vouchers.manager.CommandManager;
 import xyz.oribuin.vouchers.manager.ConfigurationManager;
 import xyz.oribuin.vouchers.manager.LocaleManager;
@@ -30,6 +32,7 @@ public class VoucherPlugin extends RosePlugin {
 
     @Override
     public void enable() {
+        Bukkit.getPluginManager().registerEvents(new VoucherListener(this), this);
     }
 
     @Override
