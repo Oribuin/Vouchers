@@ -16,7 +16,7 @@ public class VoucherPlugin extends RosePlugin {
     private static VoucherPlugin instance;
 
     public VoucherPlugin() {
-        super(-1, -1,
+        super(-1, 20798,
                 ConfigurationManager.class,
                 null,
                 LocaleManager.class,
