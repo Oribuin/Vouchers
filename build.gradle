@@ -51,7 +51,8 @@ dependencies {
 shadowJar {
     archiveClassifier.set(null)
 
-    relocate("dev.rosewood.rosegarden", "${project.group}.myplugin.rosegarden")
+    relocate("dev.rosewood.rosegarden", "${project.group}.vouchers.libs.rosegarden")
+    relocate("dev.triumphteam.gui", "${project.group}.vouchers.libs.triumphgui")
 
     // Remove comments if you're not using SQL/SQLite
     exclude 'dev/rosewood/rosegarden/lib/hikaricp/**/*.class'
