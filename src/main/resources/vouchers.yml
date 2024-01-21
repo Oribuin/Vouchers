@@ -15,7 +15,7 @@ vouchers:
     requirement-min: 1 # The amount of requirements needed to meet to redeem the voucher
     requirements:
       no-vip: # The name of the requirement
-        type: !permission # The type of requirement
+        type: '!permission' # The type of requirement
         input: 'groups.vip' # The input of the requirement
     commands:
       - '[console] lp user %player_name% addtemp vip 1h'
