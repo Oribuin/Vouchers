@@ -23,7 +23,7 @@ public class ListCommand extends RoseCommand {
     }
 
     @RoseExecutable
-    public void execute(CommandContext context, @Optional int page) {
+    public void execute(CommandContext context, @Optional Integer page) {
         PaginatedGui gui = Gui.paginated()
                 .title(Component.text("Plugin Vouchers"))
                 .disableAllInteractions()
@@ -49,7 +49,7 @@ public class ListCommand extends RoseCommand {
 
         gui.setItem(41, ItemBuilder.from(Material.ARROW).name(Component.text("Next Page")).asGuiItem(event -> gui.next()));
         gui.setItem(39, ItemBuilder.from(Material.ARROW).name(Component.text("Previous Page")).asGuiItem(event -> gui.previous()));
-        gui.open((HumanEntity) context.getSender(), page);
+        gui.open((HumanEntity) context.getSender(), page == null ? 1 : page);
     }
 
     @Override
