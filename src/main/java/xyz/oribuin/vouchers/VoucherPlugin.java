@@ -26,7 +26,7 @@ public class VoucherPlugin extends RosePlugin {
         instance = this;
     }
 
-    public static VoucherPlugin getInstance() {
+    public static VoucherPlugin get() {
         return instance;
     }
 

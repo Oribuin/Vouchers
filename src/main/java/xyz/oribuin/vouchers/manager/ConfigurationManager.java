@@ -58,7 +58,7 @@ public class ConfigurationManager extends AbstractConfigurationManager {
 
         @Override
         public CommentedFileConfiguration getBaseConfig() {
-            return VoucherPlugin.getInstance().getManager(ConfigurationManager.class).getConfig();
+            return VoucherPlugin.get().getManager(ConfigurationManager.class).getConfig();
         }
     }
 }

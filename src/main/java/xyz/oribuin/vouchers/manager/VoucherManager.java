@@ -1,5 +1,7 @@
 package xyz.oribuin.vouchers.manager;
 
+import com.google.common.collect.HashBasedTable;
+import com.google.common.collect.Table;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
@@ -19,10 +21,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class VoucherManager extends Manager {
 
     private final Map<String, Voucher> vouchers = new HashMap<>();
+    private final Table<UUID, String, Long> voucherUses = HashBasedTable.create();
 
     public VoucherManager(RosePlugin rosePlugin) {
         super(rosePlugin);
@@ -93,6 +97,8 @@ public class VoucherManager extends Manager {
         // Load all the basic easy values from the config
         voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
         voucher.setCommands(section.getStringList(key + ".commands"));
+        voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
+        voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
 
         this.vouchers.put(key.toLowerCase(), voucher);
     }
@@ -122,6 +128,44 @@ public class VoucherManager extends Manager {
         if (id == null) return null;
 
         return this.vouchers.get(id.toLowerCase());
+    }
+
+    /**
+     * Check if a player has used a voucher.
+     *
+     * @param uuid    The uuid of the player.
+     * @param voucher The voucher to check.
+     */
+    public void addCooldown(UUID uuid, Voucher voucher) {
+        this.voucherUses.put(uuid, voucher.getId(), System.currentTimeMillis());
+    }
+
+    /**
+     * Check if the player is on cooldown for the voucher.
+     *
+     * @return If the player is on cooldown.
+     */
+    public boolean isOnCooldown(UUID uuid, Voucher voucher) {
+        if (voucher.getCooldown() == 0) return false;
+
+        Long lastUse = this.voucherUses.get(uuid, voucher.getId());
+        if (lastUse == null) return false;
+
+        return System.currentTimeMillis() - lastUse < voucher.getCooldown();
+    }
+
+    /**
+     * Get the cooldown of a voucher.
+     *
+     * @return The cooldown of the voucher.
+     */
+    public long getCooldown(UUID uuid, Voucher voucher) {
+        if (voucher.getCooldown() == 0) return 0;
+
+        Long lastUse = this.voucherUses.get(uuid, voucher.getId());
+        if (lastUse == null) return 0;
+
+        return voucher.getCooldown() - (System.currentTimeMillis() - lastUse);
     }
 
     public Map<String, Voucher> getVouchers() {

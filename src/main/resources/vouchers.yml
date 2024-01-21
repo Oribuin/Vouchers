@@ -13,6 +13,9 @@ vouchers:
       amount: 1
       glow: true
     requirement-min: 1 # The amount of requirements needed to meet to redeem the voucher
+    cooldown: 1h
+    on-cooldown:
+      - '[message] &cYou can use this again in %cooldown%!'
     requirements:
       deny-commands: # If the player does not meet the requirements, these commands will be executed
         - '[message] &cYou already have the VIP Rank!'

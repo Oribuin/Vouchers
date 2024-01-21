@@ -1,5 +1,7 @@
 package xyz.oribuin.vouchers.action;
 
+import dev.rosewood.rosegarden.hook.PlaceholderAPIHook;
+import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import org.bukkit.entity.Player;
 import xyz.oribuin.vouchers.action.impl.BroadcastAction;
 import xyz.oribuin.vouchers.action.impl.ConsoleAction;
@@ -25,10 +27,11 @@ public enum ActionType {
     /**
      * Run all the plugin actions through a series of comomands
      *
-     * @param player   The player to run the actions for
-     * @param commands The commands to run
+     * @param player       The player to run the actions for
+     * @param commands     The commands to run
+     * @param placeholders The placeholders to apply to the commands
      */
-    public static void run(Player player, List<String> commands) {
+    public static void run(Player player, List<String> commands, StringPlaceholders placeholders) {
         for (String command : commands) {
             ActionType type = match(command);
 
@@ -36,9 +39,19 @@ public enum ActionType {
                 throw new IllegalArgumentException("Invalid action type: " + command);
             }
 
-            String content = command.substring(command.indexOf("]") + 2); // remove "[action] ", todo: make removing the whitespace optional
-            type.get().run(player, content);
+            String content = PlaceholderAPIHook.applyPlaceholders(player, command.substring(command.indexOf("]") + 2)); // remove "[action] ", todo: make removing the whitespace optional
+            type.get().run(player, placeholders.apply(content));
         }
+    }
+
+    /**
+     * Run all the plugin actions through a series of comomands
+     *
+     * @param player   The player to run the actions for
+     * @param commands The commands to run
+     */
+    public static void run(Player player, List<String> commands) {
+        run(player, commands, StringPlaceholders.empty());
     }
 
     /**
