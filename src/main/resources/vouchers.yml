@@ -14,10 +14,12 @@ vouchers:
       glow: true
     requirement-min: 1 # The amount of requirements needed to meet to redeem the voucher
     requirements:
+      deny-commands: # If the player does not meet the requirements, these commands will be executed
+        - '[message] &cYou already have the VIP Rank!'
       no-vip: # The name of the requirement
         type: '!permission' # The type of requirement
         input: 'groups.vip' # The input of the requirement
-    commands:
+    commands: # The commands that will be executed if the player meets the requirements
       - '[console] lp user %player_name% parent addtemp vip 1h'
       - '[message] &aYou now have VIP Rank for an hour!'
   free-1k:

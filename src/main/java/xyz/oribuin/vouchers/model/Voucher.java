@@ -20,6 +20,7 @@ public class Voucher {
     private final ItemStack display;
     private List<Requirement> requirements;
     private List<String> commands;
+    private List<String> denyCommands;
     private int requirementMin;
 
     /**
@@ -32,8 +33,9 @@ public class Voucher {
         this.id = id;
         this.display = this.apply(display);
         this.requirements = new ArrayList<>();
-        this.requirementMin = -1;
         this.commands = new ArrayList<>();
+        this.denyCommands = new ArrayList<>();
+        this.requirementMin = -1;
     }
 
     /**
@@ -61,7 +63,10 @@ public class Voucher {
                 this.requirementMin = this.requirements.size();
             }
 
-            if (evaluated < this.requirementMin) return false;
+            if (evaluated < this.requirementMin) {
+                ActionType.run(player, this.denyCommands);
+                return false;
+            }
         }
 
         ActionType.run(player, this.commands);
@@ -105,6 +110,14 @@ public class Voucher {
 
     public void setCommands(List<String> commands) {
         this.commands = commands;
+    }
+
+    public List<String> getDenyCommands() {
+        return denyCommands;
+    }
+
+    public void setDenyCommands(List<String> denyCommands) {
+        this.denyCommands = denyCommands;
     }
 
     public int getRequirementMin() {
