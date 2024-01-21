@@ -5,7 +5,7 @@ import xyz.oribuin.vouchers.requirement.Requirement;
 
 public class MathRequirement extends Requirement {
 
-    protected MathRequirement(Object input, boolean inverted) {
+    public MathRequirement(Object input, boolean inverted) {
         super(input, inverted);
     }
 

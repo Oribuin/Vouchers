@@ -13,16 +13,9 @@ public abstract class Requirement {
      *
      * @param inverted If the requirement should be inverted.
      */
-    protected Requirement(Object input, boolean inverted) {
+    public Requirement(Object input, boolean inverted) {
         this.input = input;
         this.inverted = inverted;
-    }
-
-    /**
-     * Create a new requirement object.
-     */
-    protected Requirement(Object input) {
-        this(input, false);
     }
 
     /**

@@ -5,7 +5,7 @@ import xyz.oribuin.vouchers.requirement.Requirement;
 
 public class ExpRequirement extends Requirement {
 
-    protected ExpRequirement(Object input, boolean inverted) {
+    public ExpRequirement(Object input, boolean inverted) {
         super(input, inverted);
     }
 

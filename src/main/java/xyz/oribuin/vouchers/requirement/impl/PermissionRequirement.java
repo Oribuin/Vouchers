@@ -5,7 +5,7 @@ import xyz.oribuin.vouchers.requirement.Requirement;
 
 public class PermissionRequirement extends Requirement {
 
-    protected PermissionRequirement(Object input, boolean inverted) {
+    public PermissionRequirement(Object input, boolean inverted) {
         super(input, inverted);
     }
 

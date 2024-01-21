@@ -6,7 +6,6 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import dev.rosewood.rosegarden.manager.Manager;
-import dev.rosewood.rosegarden.manager.PluginUpdateManager;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -90,14 +89,11 @@ public class VoucherManager extends Manager {
 
             // Load all the requirements from the config
             List<Requirement> requirements = new ArrayList<>();
-            ConfigurationSection requirementSection = section.getConfigurationSection(key + ".requirements");
+            CommentedConfigurationSection requirementSection = section.getConfigurationSection(key + ".requirements");
             if (requirementSection != null) {
                 requirementSection.getKeys(false).forEach(id -> {
-                    CommentedConfigurationSection requirementConfig = section.getConfigurationSection("requirements." + id);
-                    if (requirementConfig == null) return;
-
-                    String type = requirementConfig.getString("type");
-                    Object input = requirementConfig.get("input");
+                    String type = requirementSection.getString(id + ".type");
+                    Object input = requirementSection.get(id + ".input");
 
                     if (type == null || input == null) {
                         this.rosePlugin.getLogger().warning("Unable to load requirement '" + id + "' for voucher '" + id + "'. Invalid type or input.");
