@@ -1,15 +1,24 @@
 package xyz.oribuin.vouchers.manager;
 
-import xyz.oribuin.vouchers.VoucherPlugin;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import dev.rosewood.rosegarden.config.RoseSetting;
 import dev.rosewood.rosegarden.manager.AbstractConfigurationManager;
+import xyz.oribuin.vouchers.VoucherPlugin;
 
 public class ConfigurationManager extends AbstractConfigurationManager {
 
+    public ConfigurationManager(RosePlugin rosePlugin) {
+        super(rosePlugin, Setting.class);
+    }
+
+    @Override
+    protected String[] getHeader() {
+        return new String[]{};
+    }
+
     public enum Setting implements RoseSetting {
-        MY_SETTINGS("my-settings", "default-value", "This is a comment.", "This is another comment.");
+        ;
 
         private final String key;
         private final Object defaultValue;
@@ -51,14 +60,5 @@ public class ConfigurationManager extends AbstractConfigurationManager {
         public CommentedFileConfiguration getBaseConfig() {
             return VoucherPlugin.getInstance().getManager(ConfigurationManager.class).getConfig();
         }
-    }
-
-    public ConfigurationManager(RosePlugin rosePlugin) {
-        super(rosePlugin, Setting.class);
-    }
-
-    @Override
-    protected String[] getHeader() {
-        return new String[]{};
     }
 }

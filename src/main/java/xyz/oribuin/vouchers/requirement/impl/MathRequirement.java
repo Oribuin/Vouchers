@@ -17,7 +17,6 @@ public class MathRequirement extends Requirement {
         String[] split = input.split(" ");
         if (split.length != 3) return false;
 
-        String operator = split[1];
         int num1;
         int num2;
 

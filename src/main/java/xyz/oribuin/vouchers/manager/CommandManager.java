@@ -1,9 +1,9 @@
 package xyz.oribuin.vouchers.manager;
 
-import xyz.oribuin.vouchers.command.VoucherCommandWrapper;
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.command.framework.RoseCommandWrapper;
 import dev.rosewood.rosegarden.manager.AbstractCommandManager;
+import xyz.oribuin.vouchers.command.VoucherCommandWrapper;
 
 import java.util.List;
 

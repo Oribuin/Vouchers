@@ -1,13 +1,10 @@
 package xyz.oribuin.vouchers;
 
-import org.bukkit.Bukkit;
-import org.bukkit.event.EventPriority;
-import org.bukkit.event.player.PlayerInteractEvent;
+import dev.rosewood.rosegarden.RosePlugin;
+import dev.rosewood.rosegarden.manager.Manager;
 import xyz.oribuin.vouchers.manager.CommandManager;
 import xyz.oribuin.vouchers.manager.ConfigurationManager;
 import xyz.oribuin.vouchers.manager.LocaleManager;
-import dev.rosewood.rosegarden.RosePlugin;
-import dev.rosewood.rosegarden.manager.Manager;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 
 import java.util.List;
@@ -15,10 +12,6 @@ import java.util.List;
 public class VoucherPlugin extends RosePlugin {
 
     private static VoucherPlugin instance;
-
-    public static VoucherPlugin getInstance() {
-        return instance;
-    }
 
     public VoucherPlugin() {
         super(-1, -1,
@@ -29,6 +22,10 @@ public class VoucherPlugin extends RosePlugin {
         );
 
         instance = this;
+    }
+
+    public static VoucherPlugin getInstance() {
+        return instance;
     }
 
     @Override
