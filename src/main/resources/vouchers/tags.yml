@@ -1,0 +1,20 @@
+# An Example voucher that uses EternalTags & PlaceholderAPI
+eternaltags-smiley:
+  item:
+    material: NAME_TAG
+    name: '&f&l<#FFD700^-^&f&l>'
+    lore:
+      - ' &7| &fRight click to unlock'
+      - ' &7| &fthe &eSmiley &ftag!'
+      - ''
+    amount: 1
+    glow: true
+  deny-commands:
+    - '&cYou already have this tag unlocked.'
+  requirements:
+    hasnt-unlocked:
+      type: '!permission'
+      input: 'eternaltags.tags.smiley_face'
+  commands:
+    - 'lp user %player_name% permission set eternaltags.tags.smiley_face true'
+    - 'tags set %player_name% smiley_face'

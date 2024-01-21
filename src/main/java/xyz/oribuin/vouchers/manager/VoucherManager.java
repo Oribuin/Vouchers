@@ -40,6 +40,7 @@ public class VoucherManager extends Manager {
         VoucherUtils.createFile(this.rosePlugin, "vouchers", "ranks.yml");
         VoucherUtils.createFile(this.rosePlugin, "vouchers", "pouches", "experience.yml");
         VoucherUtils.createFile(this.rosePlugin, "vouchers", "pouches", "money.yml");
+        VoucherUtils.createFile(this.rosePlugin, "vouchers", "tags.yml");
 
         // Load all the vouchers from the config
         File vouchersFolder = new File(this.rosePlugin.getDataFolder(), "vouchers");
