@@ -91,6 +91,7 @@ public class VoucherManager extends Manager {
             });
 
             voucher.setRequirements(requirements);
+            voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
         }
 
         // Load all the basic easy values from the config

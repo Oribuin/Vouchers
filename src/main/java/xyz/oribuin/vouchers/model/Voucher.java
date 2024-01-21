@@ -24,9 +24,10 @@ public class Voucher {
     private final ItemStack display;
     private List<Requirement> requirements;
     private List<String> commands;
+    private List<String> denyCommands;
+    private List<String> cooldownActions;
     private int requirementMin;
     private long cooldown;
-    private List<String> cooldownActions;
 
     /**
      * Create a new voucher object for caching.
@@ -38,10 +39,11 @@ public class Voucher {
         this.id = id;
         this.display = this.apply(display);
         this.requirements = new ArrayList<>();
-        this.requirementMin = -1;
         this.commands = new ArrayList<>();
-        this.cooldown = 0;
+        this.denyCommands = new ArrayList<>();
         this.cooldownActions = new ArrayList<>();
+        this.requirementMin = -1;
+        this.cooldown = 0;
     }
 
     /**
@@ -81,7 +83,10 @@ public class Voucher {
                 this.requirementMin = this.requirements.size();
             }
 
-            if (evaluated < this.requirementMin) return false;
+            if (evaluated < this.requirementMin) {
+                ActionType.run(player, this.denyCommands);
+                return false;
+            }
         }
 
         // Run all the commands and actions
@@ -132,6 +137,14 @@ public class Voucher {
 
     public void setCommands(List<String> commands) {
         this.commands = commands;
+    }
+
+    public List<String> getDenyCommands() {
+        return denyCommands;
+    }
+
+    public void setDenyCommands(List<String> denyCommands) {
+        this.denyCommands = denyCommands;
     }
 
     public int getRequirementMin() {
