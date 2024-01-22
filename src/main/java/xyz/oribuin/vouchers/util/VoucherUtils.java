@@ -161,34 +161,6 @@ public final class VoucherUtils {
     }
 
     /**
-     * Create a file from the plugin's resources
-     *
-     * @param rosePlugin The plugin
-     * @param fileName   The file name
-     * @return The file
-     */
-    @NotNull
-    public static File createFile(@NotNull RosePlugin rosePlugin, @NotNull String fileName) {
-        File file = new File(rosePlugin.getDataFolder(), fileName); // Create the file
-
-        if (file.exists())
-            return file;
-
-        try (InputStream inStream = rosePlugin.getResource(fileName)) {
-            if (inStream == null) {
-                file.createNewFile();
-                return file;
-            }
-
-            Files.copy(inStream, Paths.get(file.getAbsolutePath()));
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return file;
-    }
-
-    /**
      * Convert a string to a duration
      *
      * @param input The input string
