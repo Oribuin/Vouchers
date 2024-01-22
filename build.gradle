@@ -6,8 +6,8 @@ plugins {
     id "maven-publish"
 }
 
-group = 'dev.oribuin'
-version = '1.0'
+group = 'xyz.oribuin'
+version = '1.0.1'
 
 java {
     toolchain {
