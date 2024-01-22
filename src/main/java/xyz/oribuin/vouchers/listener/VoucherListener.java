@@ -22,7 +22,6 @@ public class VoucherListener implements Listener {
     public void onInteract(PlayerInteractEvent event) {
         if (event.getAction() != Action.RIGHT_CLICK_AIR && event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
         if (event.getItem() == null) return;
-        if (event.getClickedBlock() == null) return;
         if (event.useInteractedBlock() == Event.Result.DENY) return;
 
         Voucher voucher = this.plugin.getManager(VoucherManager.class).getVoucher(event.getItem());
