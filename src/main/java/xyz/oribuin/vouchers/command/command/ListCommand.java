@@ -13,6 +13,7 @@ import dev.triumphteam.gui.guis.PaginatedGui;
 import net.kyori.adventure.text.Component;
 import org.bukkit.Material;
 import org.bukkit.entity.HumanEntity;
+import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.model.Voucher;
@@ -49,10 +50,10 @@ public class ListCommand extends RoseCommand {
         vouchers.forEach(voucher -> {
             ItemStack item = voucher.getDisplay();
 
-            GuiItem guiItem = ItemBuilder.from(item).asGuiItem(event -> event
-                    .getWhoClicked()
-                    .getInventory()
-                    .addItem(voucher.getDisplay())
+            GuiItem guiItem = ItemBuilder.from(item).asGuiItem(event -> voucher.give(
+                            (Player) event.getWhoClicked(),
+                            event.getWhoClicked().isSneaking() ? item.getMaxStackSize() : 1
+                    )
             );
 
             gui.addItem(guiItem);
