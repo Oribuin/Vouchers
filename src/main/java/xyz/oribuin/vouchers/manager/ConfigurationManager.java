@@ -18,6 +18,7 @@ public class ConfigurationManager extends AbstractConfigurationManager {
     }
 
     public enum Setting implements RoseSetting {
+        REDEEM_WHILE_CROUCHING("redeem-while-crouching", true, "If a voucher can be redeemed while crouching"),
         ;
 
         private final String key;
