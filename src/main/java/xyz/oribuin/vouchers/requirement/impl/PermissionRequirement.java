@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class PermissionRequirement extends Requirement {
 
-    public PermissionRequirement(Object input, boolean inverted) {
-        super(input, inverted);
+    public PermissionRequirement(Object input, Object output, boolean inverted) {
+        super(input, output, inverted);
     }
 
     @Override

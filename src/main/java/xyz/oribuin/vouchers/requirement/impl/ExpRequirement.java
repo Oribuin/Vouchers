@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class ExpRequirement extends Requirement {
 
-    public ExpRequirement(Object input, boolean inverted) {
-        super(input, inverted);
+    public ExpRequirement(Object input, Object output, boolean inverted) {
+        super(input, output, inverted);
     }
 
     @Override

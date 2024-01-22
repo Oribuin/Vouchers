@@ -9,8 +9,8 @@ import java.util.Objects;
 
 public class PointsRequirement extends Requirement {
 
-    public PointsRequirement(Object input, boolean inverted) {
-        super(input, inverted);
+    public PointsRequirement(Object input, Object output, boolean inverted) {
+        super(input, output, inverted);
     }
 
     @Override

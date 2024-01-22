@@ -1,5 +1,6 @@
 package xyz.oribuin.vouchers.requirement;
 
+import xyz.oribuin.vouchers.VoucherPlugin;
 import xyz.oribuin.vouchers.requirement.impl.EqualsRequirement;
 import xyz.oribuin.vouchers.requirement.impl.ExpRequirement;
 import xyz.oribuin.vouchers.requirement.impl.MathRequirement;
@@ -51,7 +52,8 @@ public enum RequirementType {
         try {
             return type.clazz.getConstructor(Object.class, Object.class, boolean.class).newInstance(input, output, inverted);
         } catch (InvocationTargetException | InstantiationException | IllegalAccessException | NoSuchMethodException e) {
-            throw new RuntimeException(e);
+            VoucherPlugin.get().getLogger().severe("Failed to create requirement type: " + type.name() + " [" + e.getCause() + "]");
+            return null;
         }
     }
 

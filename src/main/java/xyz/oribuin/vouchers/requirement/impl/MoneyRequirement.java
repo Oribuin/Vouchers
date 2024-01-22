@@ -8,8 +8,8 @@ import java.util.Objects;
 
 public class MoneyRequirement extends Requirement {
 
-    public MoneyRequirement(Object input, boolean inverted) {
-        super(input, inverted);
+    public MoneyRequirement(Object input, Object output, boolean inverted) {
+        super(input, output, inverted);
     }
 
     @Override

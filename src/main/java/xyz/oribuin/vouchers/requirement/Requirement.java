@@ -24,18 +24,6 @@ public abstract class Requirement {
     }
 
     /**
-     * Create a new requirement object.
-     *
-     * @param input    The input of the requirement.
-     * @param inverted If the requirement should be inverted.
-     */
-    public Requirement(Object input, boolean inverted) {
-        this.input = input;
-        this.output = null;
-        this.inverted = inverted;
-    }
-
-    /**
      * @return The description of the requirement.
      */
     public abstract boolean evaluate(Player player);

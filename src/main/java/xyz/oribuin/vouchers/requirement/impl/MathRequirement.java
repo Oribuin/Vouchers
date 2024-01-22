@@ -7,8 +7,8 @@ import java.util.Objects;
 
 public class MathRequirement extends Requirement {
 
-    public MathRequirement(Object input, boolean inverted) {
-        super(input, inverted);
+    public MathRequirement(Object input, Object output, boolean inverted) {
+        super(input, output, inverted);
     }
 
     @Override
