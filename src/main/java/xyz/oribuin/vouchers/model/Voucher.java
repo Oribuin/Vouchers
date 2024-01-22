@@ -15,10 +15,12 @@ import xyz.oribuin.vouchers.util.VoucherUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Voucher {
 
     public static final NamespacedKey DATA_KEY = new NamespacedKey("vouchers", "uses");
+    public static final NamespacedKey UNIQUE_KEY = new NamespacedKey("vouchers", "unique");
 
     private final String id;
     private final ItemStack display;
@@ -28,6 +30,7 @@ public class Voucher {
     private List<String> cooldownActions;
     private int requirementMin;
     private long cooldown;
+    private boolean unique;
 
     /**
      * Create a new voucher object for caching.
@@ -44,6 +47,7 @@ public class Voucher {
         this.cooldownActions = new ArrayList<>();
         this.requirementMin = -1;
         this.cooldown = 0;
+        this.unique = false;
     }
 
     /**
@@ -55,6 +59,10 @@ public class Voucher {
         ItemStack item = this.display.clone();
         item.setAmount(amt);
 
+        if (this.unique) {
+            this.applyUnique(item);
+        }
+
         player.getInventory().addItem(item);
     }
 
@@ -63,7 +71,7 @@ public class Voucher {
      *
      * @param player The player to redeem the voucher for.
      */
-    public boolean redeem(Player player) {
+    public boolean redeem(Player player, UUID uniqueId) {
         VoucherManager manager = VoucherPlugin.get().getManager(VoucherManager.class);
 
         // Check if the player is on cooldown
@@ -89,8 +97,19 @@ public class Voucher {
             }
         }
 
+        // Check if the player has used the voucher before
+        if (this.unique && uniqueId != null && manager.hasBeenUsed(uniqueId)) {
+            ActionType.run(player, this.denyCommands);
+            return false;
+        }
+
         // Run all the commands and actions
         ActionType.run(player, this.commands);
+
+        // Add the use
+        if (this.unique && uniqueId != null) {
+            manager.addUse(uniqueId);
+        }
 
         // Add the cooldown
         if (this.cooldown > 0) {
@@ -111,6 +130,21 @@ public class Voucher {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(DATA_KEY, PersistentDataType.STRING, this.id.toLowerCase());
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    /**
+     * Apply the voucher data to an item.
+     *
+     * @param itemStack The item to apply the voucher data to.
+     */
+    public ItemStack applyUnique(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return itemStack;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(UNIQUE_KEY, PersistentDataType.STRING,  UUID.randomUUID().toString());
         itemStack.setItemMeta(meta);
         return itemStack;
     }
@@ -169,6 +203,14 @@ public class Voucher {
 
     public void setCooldownActions(List<String> cooldownActions) {
         this.cooldownActions = cooldownActions;
+    }
+
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean unique) {
+        this.unique = unique;
     }
 
 }

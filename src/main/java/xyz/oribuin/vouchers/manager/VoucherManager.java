@@ -6,7 +6,6 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import dev.rosewood.rosegarden.manager.Manager;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -17,6 +16,7 @@ import xyz.oribuin.vouchers.requirement.RequirementType;
 import xyz.oribuin.vouchers.util.VoucherUtils;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,6 +28,8 @@ public class VoucherManager extends Manager {
 
     private final Map<String, Voucher> vouchers = new HashMap<>();
     private final Table<UUID, String, Long> voucherUses = HashBasedTable.create();
+    private CommentedFileConfiguration uniqueUseConfig;
+    private File uniqueUseFile;
 
     public VoucherManager(RosePlugin rosePlugin) {
         super(rosePlugin);
@@ -55,6 +57,17 @@ public class VoucherManager extends Manager {
         if (folders == null) return;
 
         Arrays.stream(folders).filter(File::isDirectory).forEach(this::loadFolder);
+
+        // Load the unique use config
+        try {
+            this.uniqueUseFile = new File(this.rosePlugin.getDataFolder(), "voucher-uses.yml");
+            if (!this.uniqueUseFile.exists()) {
+                this.uniqueUseFile.createNewFile();
+            }
+
+            this.uniqueUseConfig = CommentedFileConfiguration.loadConfiguration(this.uniqueUseFile);
+        } catch (IOException ignored) {
+        }
     }
 
     /**
@@ -107,14 +120,15 @@ public class VoucherManager extends Manager {
                 });
 
                 voucher.setRequirements(requirements);
-                voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
             }
 
             // Load all the basic easy values from the config
+            voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
             voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
             voucher.setCommands(section.getStringList(key + ".commands"));
             voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
             voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
+            voucher.setUnique(section.getBoolean(key + ".unique", false));
 
             this.vouchers.put(key.toLowerCase(), voucher);
         });
@@ -184,6 +198,43 @@ public class VoucherManager extends Manager {
         if (lastUse == null) return 0;
 
         return voucher.getCooldown() - (System.currentTimeMillis() - lastUse);
+    }
+
+    /**
+     * Get the unique id of a voucher.
+     *
+     * @param itemStack The item to get the unique id from.
+     * @return The unique id of the voucher.
+     */
+    public UUID getUniqueId(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return null;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String id = container.get(Voucher.UNIQUE_KEY, PersistentDataType.STRING);
+        if (id == null) return null;
+
+        return UUID.fromString(id);
+    }
+
+    /**
+     * Check how many times that voucher has been used.
+     *
+     * @param voucherId The id of the voucher.
+     * @return The amount of times the voucher has been used.
+     */
+    public boolean hasBeenUsed(UUID voucherId) {
+        return this.uniqueUseConfig.contains(voucherId.toString());
+    }
+
+    /**
+     * Add a use to the voucher.
+     *
+     * @param voucher The voucher to add a use to.
+     */
+    public void addUse(UUID voucher) {
+        this.uniqueUseConfig.set(voucher.toString(), 1);
+        this.uniqueUseConfig.save(this.uniqueUseFile);
     }
 
     public Map<String, Voucher> getVouchers() {
