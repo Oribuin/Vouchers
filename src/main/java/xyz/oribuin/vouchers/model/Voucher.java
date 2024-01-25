@@ -9,6 +9,7 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import xyz.oribuin.vouchers.VoucherPlugin;
 import xyz.oribuin.vouchers.action.ActionType;
+import xyz.oribuin.vouchers.manager.DataManager;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.requirement.Requirement;
 import xyz.oribuin.vouchers.util.VoucherUtils;
@@ -27,6 +28,7 @@ public class Voucher {
     private List<Requirement> requirements;
     private List<String> commands;
     private List<String> denyCommands;
+    private List<String> uniqueCommands;
     private List<String> cooldownActions;
     private int requirementMin;
     private long cooldown;
@@ -44,6 +46,7 @@ public class Voucher {
         this.requirements = new ArrayList<>();
         this.commands = new ArrayList<>();
         this.denyCommands = new ArrayList<>();
+        this.uniqueCommands = new ArrayList<>();
         this.cooldownActions = new ArrayList<>();
         this.requirementMin = -1;
         this.cooldown = 0;
@@ -73,6 +76,7 @@ public class Voucher {
      */
     public boolean redeem(Player player, UUID uniqueId) {
         VoucherManager manager = VoucherPlugin.get().getManager(VoucherManager.class);
+        DataManager data = VoucherPlugin.get().getManager(DataManager.class);
 
         // Check if the player is on cooldown
         long cooldown = manager.getCooldown(player.getUniqueId(), this);
@@ -98,8 +102,9 @@ public class Voucher {
         }
 
         // Check if the player has used the voucher before
-        if (this.unique && uniqueId != null && manager.hasBeenUsed(uniqueId)) {
-            ActionType.run(player, this.denyCommands);
+        int uses = data.getUses(uniqueId);
+        if (this.unique && uniqueId != null && uses <= 0) {
+            ActionType.run(player, this.uniqueCommands);
             return false;
         }
 
@@ -108,7 +113,7 @@ public class Voucher {
 
         // Add the use
         if (this.unique && uniqueId != null) {
-            manager.addUse(uniqueId);
+            data.addUse(uniqueId, uses - 1);
         }
 
         // Add the cooldown
@@ -144,7 +149,7 @@ public class Voucher {
         if (meta == null) return itemStack;
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
-        container.set(UNIQUE_KEY, PersistentDataType.STRING,  UUID.randomUUID().toString());
+        container.set(UNIQUE_KEY, PersistentDataType.STRING, UUID.randomUUID().toString());
         itemStack.setItemMeta(meta);
         return itemStack;
     }
@@ -211,6 +216,14 @@ public class Voucher {
 
     public void setUnique(boolean unique) {
         this.unique = unique;
+    }
+
+    public List<String> getUniqueCommands() {
+        return uniqueCommands;
+    }
+
+    public void setUniqueCommands(List<String> uniqueCommands) {
+        this.uniqueCommands = uniqueCommands;
     }
 
 }

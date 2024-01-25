@@ -16,7 +16,6 @@ import xyz.oribuin.vouchers.requirement.RequirementType;
 import xyz.oribuin.vouchers.util.VoucherUtils;
 
 import java.io.File;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -28,8 +27,6 @@ public class VoucherManager extends Manager {
 
     private final Map<String, Voucher> vouchers = new HashMap<>();
     private final Table<UUID, String, Long> voucherUses = HashBasedTable.create();
-    private CommentedFileConfiguration uniqueUseConfig;
-    private File uniqueUseFile;
 
     public VoucherManager(RosePlugin rosePlugin) {
         super(rosePlugin);
@@ -57,17 +54,6 @@ public class VoucherManager extends Manager {
         if (folders == null) return;
 
         Arrays.stream(folders).filter(File::isDirectory).forEach(this::loadFolder);
-
-        // Load the unique use config
-        try {
-            this.uniqueUseFile = new File(this.rosePlugin.getDataFolder(), "voucher-uses.yml");
-            if (!this.uniqueUseFile.exists()) {
-                this.uniqueUseFile.createNewFile();
-            }
-
-            this.uniqueUseConfig = CommentedFileConfiguration.loadConfiguration(this.uniqueUseFile);
-        } catch (IOException ignored) {
-        }
     }
 
     /**
@@ -129,7 +115,7 @@ public class VoucherManager extends Manager {
             voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
             voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
             voucher.setUnique(section.getBoolean(key + ".unique", false));
-
+            voucher.setUniqueCommands(section.getStringList(key + ".unique-commands"));
             this.vouchers.put(key.toLowerCase(), voucher);
         });
 
@@ -215,26 +201,6 @@ public class VoucherManager extends Manager {
         if (id == null) return null;
 
         return UUID.fromString(id);
-    }
-
-    /**
-     * Check how many times that voucher has been used.
-     *
-     * @param voucherId The id of the voucher.
-     * @return The amount of times the voucher has been used.
-     */
-    public boolean hasBeenUsed(UUID voucherId) {
-        return this.uniqueUseConfig.contains(voucherId.toString());
-    }
-
-    /**
-     * Add a use to the voucher.
-     *
-     * @param voucher The voucher to add a use to.
-     */
-    public void addUse(UUID voucher) {
-        this.uniqueUseConfig.set(voucher.toString(), 1);
-        this.uniqueUseConfig.save(this.uniqueUseFile);
     }
 
     public Map<String, Voucher> getVouchers() {
