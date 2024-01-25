@@ -6,7 +6,6 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import dev.rosewood.rosegarden.manager.Manager;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -107,15 +106,16 @@ public class VoucherManager extends Manager {
                 });
 
                 voucher.setRequirements(requirements);
-                voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
             }
 
             // Load all the basic easy values from the config
+            voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
             voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
             voucher.setCommands(section.getStringList(key + ".commands"));
             voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
             voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
-
+            voucher.setUnique(section.getBoolean(key + ".unique", false));
+            voucher.setUniqueCommands(section.getStringList(key + ".unique-commands"));
             this.vouchers.put(key.toLowerCase(), voucher);
         });
 
@@ -184,6 +184,23 @@ public class VoucherManager extends Manager {
         if (lastUse == null) return 0;
 
         return voucher.getCooldown() - (System.currentTimeMillis() - lastUse);
+    }
+
+    /**
+     * Get the unique id of a voucher.
+     *
+     * @param itemStack The item to get the unique id from.
+     * @return The unique id of the voucher.
+     */
+    public UUID getUniqueId(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return null;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        String id = container.get(Voucher.UNIQUE_KEY, PersistentDataType.STRING);
+        if (id == null) return null;
+
+        return UUID.fromString(id);
     }
 
     public Map<String, Voucher> getVouchers() {

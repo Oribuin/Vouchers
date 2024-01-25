@@ -6,6 +6,7 @@ import org.bukkit.Bukkit;
 import xyz.oribuin.vouchers.listener.VoucherListener;
 import xyz.oribuin.vouchers.manager.CommandManager;
 import xyz.oribuin.vouchers.manager.ConfigurationManager;
+import xyz.oribuin.vouchers.manager.DataManager;
 import xyz.oribuin.vouchers.manager.LocaleManager;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 
@@ -18,7 +19,7 @@ public class VoucherPlugin extends RosePlugin {
     public VoucherPlugin() {
         super(114633, 20798,
                 ConfigurationManager.class,
-                null,
+                DataManager.class,
                 LocaleManager.class,
                 CommandManager.class
         );
