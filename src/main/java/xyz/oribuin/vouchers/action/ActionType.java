@@ -2,11 +2,13 @@ package xyz.oribuin.vouchers.action;
 
 import dev.rosewood.rosegarden.hook.PlaceholderAPIHook;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xyz.oribuin.vouchers.action.impl.BroadcastAction;
 import xyz.oribuin.vouchers.action.impl.ConsoleAction;
 import xyz.oribuin.vouchers.action.impl.MessageAction;
 import xyz.oribuin.vouchers.action.impl.PlayerAction;
+import xyz.oribuin.vouchers.util.VoucherUtils;
 
 import java.util.List;
 
@@ -33,13 +35,13 @@ public enum ActionType {
      */
     public static void run(Player player, List<String> commands, StringPlaceholders placeholders) {
         for (String command : commands) {
-            ActionType type = match(command);
-
+            ActionType type = match(command.trim());
             if (type == null) {
-                throw new IllegalArgumentException("Invalid action type: " + command);
+                Bukkit.getLogger().warning("Invalid action type for command: " + command);
+                continue;
             }
 
-            String content = PlaceholderAPIHook.applyPlaceholders(player, command.substring(command.indexOf("]") + 2)); // remove "[action] ", todo: make removing the whitespace optional
+            String content = PlaceholderAPIHook.applyPlaceholders(player, command.substring(command.indexOf("]") + 1));
             type.get().run(player, placeholders.apply(content));
         }
     }
@@ -61,16 +63,12 @@ public enum ActionType {
      * @return The action type
      */
     private static ActionType match(String content) {
-        // Match the [action] in the content
-        String action = content.substring(1, content.indexOf("]"));
-
-        // Loop through all the actions
-        for (ActionType type : values()) {
-            if (type.name().equalsIgnoreCase(action))
-                return type;
+        try {
+            String action = content.substring(1, content.indexOf("]"));
+            return VoucherUtils.getEnum(ActionType.class, action, ActionType.MESSAGE);
+        } catch (StringIndexOutOfBoundsException ignored) {
+            return ActionType.MESSAGE;
         }
-
-        return null;
     }
 
     public Action get() {
