@@ -10,11 +10,11 @@ eternaltags-smiley:
     amount: 1
     glow: true
   deny-commands:
-    - '&cYou already have this tag unlocked.'
+    - '[message] &cYou already have this tag unlocked.'
   requirements:
     hasnt-unlocked:
       type: '!permission'
       input: 'eternaltags.tags.smiley_face'
   commands:
-    - 'lp user %player_name% permission set eternaltags.tags.smiley_face true'
-    - 'tags set %player_name% smiley_face'
+    - '[console] lp user %player_name% permission set eternaltags.tags.smiley_face true'
+    - '[console] tags set %player_name% smiley_face'
