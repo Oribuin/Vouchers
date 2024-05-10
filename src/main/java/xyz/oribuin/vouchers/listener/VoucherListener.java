@@ -5,6 +5,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
+import org.bukkit.inventory.ItemStack;
 import xyz.oribuin.vouchers.VoucherPlugin;
 import xyz.oribuin.vouchers.manager.ConfigurationManager.Setting;
 import xyz.oribuin.vouchers.manager.VoucherManager;
@@ -12,10 +13,10 @@ import xyz.oribuin.vouchers.model.Voucher;
 
 public class VoucherListener implements Listener {
 
-    private final VoucherPlugin plugin;
+    private final VoucherManager manager;
 
     public VoucherListener(VoucherPlugin plugin) {
-        this.plugin = plugin;
+        this.manager = plugin.getManager(VoucherManager.class);
     }
 
     @EventHandler(priority = EventPriority.HIGHEST)
@@ -24,14 +25,15 @@ public class VoucherListener implements Listener {
         if (event.getItem() == null) return;
         if (event.getClickedBlock() != null && event.getClickedBlock().getType().isInteractable()) return;
 
-        Voucher voucher = this.plugin.getManager(VoucherManager.class).getVoucher(event.getItem());
+        Voucher voucher = this.manager.getVoucher(event.getItem());
         if (voucher == null) return;
         event.setCancelled(true);
 
         if (!Setting.REDEEM_WHILE_CROUCHING.getBoolean() && event.getPlayer().isSneaking()) return;
 
-        if (voucher.redeem(event.getPlayer())) {
-            event.getItem().setAmount(event.getItem().getAmount() - 1);
+        ItemStack item = event.getItem();
+        if (voucher.redeem(event.getPlayer(), manager.getUniqueId(item))) {
+            item.setAmount(item.getAmount() - 1);
         }
     }
 

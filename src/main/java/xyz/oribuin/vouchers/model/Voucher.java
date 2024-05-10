@@ -9,25 +9,30 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import xyz.oribuin.vouchers.VoucherPlugin;
 import xyz.oribuin.vouchers.action.ActionType;
+import xyz.oribuin.vouchers.manager.DataManager;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.requirement.Requirement;
 import xyz.oribuin.vouchers.util.VoucherUtils;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 public class Voucher {
 
     public static final NamespacedKey DATA_KEY = new NamespacedKey("vouchers", "uses");
+    public static final NamespacedKey UNIQUE_KEY = new NamespacedKey("vouchers", "unique");
 
     private final String id;
     private final ItemStack display;
     private List<Requirement> requirements;
     private List<String> commands;
     private List<String> denyCommands;
+    private List<String> uniqueCommands;
     private List<String> cooldownActions;
     private int requirementMin;
     private long cooldown;
+    private boolean unique;
 
     /**
      * Create a new voucher object for caching.
@@ -41,9 +46,11 @@ public class Voucher {
         this.requirements = new ArrayList<>();
         this.commands = new ArrayList<>();
         this.denyCommands = new ArrayList<>();
+        this.uniqueCommands = new ArrayList<>();
         this.cooldownActions = new ArrayList<>();
         this.requirementMin = -1;
         this.cooldown = 0;
+        this.unique = false;
     }
 
     /**
@@ -55,6 +62,10 @@ public class Voucher {
         ItemStack item = this.display.clone();
         item.setAmount(amt);
 
+        if (this.unique) {
+            this.applyUnique(item);
+        }
+
         player.getInventory().addItem(item);
     }
 
@@ -63,8 +74,9 @@ public class Voucher {
      *
      * @param player The player to redeem the voucher for.
      */
-    public boolean redeem(Player player) {
+    public boolean redeem(Player player, UUID uniqueId) {
         VoucherManager manager = VoucherPlugin.get().getManager(VoucherManager.class);
+        DataManager data = VoucherPlugin.get().getManager(DataManager.class);
 
         // Check if the player is on cooldown
         long cooldown = manager.getCooldown(player.getUniqueId(), this);
@@ -89,8 +101,20 @@ public class Voucher {
             }
         }
 
+        // Check if the player has used the voucher before
+        int uses = data.getUses(uniqueId);
+        if (this.unique && uniqueId != null && uses <= 0) {
+            ActionType.run(player, this.uniqueCommands);
+            return false;
+        }
+
         // Run all the commands and actions
         ActionType.run(player, this.commands);
+
+        // Add the use
+        if (this.unique && uniqueId != null) {
+            data.addUse(uniqueId, uses - 1);
+        }
 
         // Add the cooldown
         if (this.cooldown > 0) {
@@ -111,6 +135,21 @@ public class Voucher {
 
         PersistentDataContainer container = meta.getPersistentDataContainer();
         container.set(DATA_KEY, PersistentDataType.STRING, this.id.toLowerCase());
+        itemStack.setItemMeta(meta);
+        return itemStack;
+    }
+
+    /**
+     * Apply the voucher data to an item.
+     *
+     * @param itemStack The item to apply the voucher data to.
+     */
+    public ItemStack applyUnique(ItemStack itemStack) {
+        ItemMeta meta = itemStack.getItemMeta();
+        if (meta == null) return itemStack;
+
+        PersistentDataContainer container = meta.getPersistentDataContainer();
+        container.set(UNIQUE_KEY, PersistentDataType.STRING, UUID.randomUUID().toString());
         itemStack.setItemMeta(meta);
         return itemStack;
     }
@@ -169,6 +208,22 @@ public class Voucher {
 
     public void setCooldownActions(List<String> cooldownActions) {
         this.cooldownActions = cooldownActions;
+    }
+
+    public boolean isUnique() {
+        return unique;
+    }
+
+    public void setUnique(boolean unique) {
+        this.unique = unique;
+    }
+
+    public List<String> getUniqueCommands() {
+        return uniqueCommands;
+    }
+
+    public void setUniqueCommands(List<String> uniqueCommands) {
+        this.uniqueCommands = uniqueCommands;
     }
 
 }

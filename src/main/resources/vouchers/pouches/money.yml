@@ -14,6 +14,9 @@ small-money-pouch:
       - ''
     amount: 1
     glow: true
+  unique: true # Makes the voucher one time use only
+  unique-commands: # Commands to run when the voucher is used
+    - '[message] &cThis item has already been redeemed!'
   commands:
     - '[console] eco give %player_name% %rng_1000,5000%'
 
