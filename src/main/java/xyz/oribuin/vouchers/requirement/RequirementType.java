@@ -1,6 +1,7 @@
 package xyz.oribuin.vouchers.requirement;
 
 import xyz.oribuin.vouchers.VoucherPlugin;
+import xyz.oribuin.vouchers.requirement.impl.ContainsRequirement;
 import xyz.oribuin.vouchers.requirement.impl.EqualsRequirement;
 import xyz.oribuin.vouchers.requirement.impl.ExpRequirement;
 import xyz.oribuin.vouchers.requirement.impl.MathRequirement;
@@ -13,11 +14,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.Arrays;
 
 public enum RequirementType {
-    PERMISSION("permission", PermissionRequirement.class),
+    CONTAINS("contains", ContainsRequirement.class),
+    EQUALS("equals", EqualsRequirement.class),
     EXP("exp", ExpRequirement.class),
     MATH("math", MathRequirement.class),
-    EQUALS("equals", EqualsRequirement.class),
     HAS_MONEY("has money", MoneyRequirement.class),
+    PERMISSION("permission", PermissionRequirement.class),
     HAS_POINTS("has points", PointsRequirement.class),
     REGEX("regex", RegexRequirement.class);
 
