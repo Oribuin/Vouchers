@@ -115,6 +115,7 @@ public class VoucherManager extends Manager {
             voucher.setCommands(section.getStringList(key + ".commands"));
             voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
             voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
+            voucher.setConfirmRequired(section.getBoolean(key + ".require-confirm", false));
 
             this.vouchers.put(key.toLowerCase(), voucher);
         });

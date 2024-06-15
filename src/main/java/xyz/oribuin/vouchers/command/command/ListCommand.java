@@ -17,10 +17,11 @@ import org.bukkit.inventory.ItemStack;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.model.Voucher;
 
+import static xyz.oribuin.vouchers.util.VoucherUtils.BORDER;
+
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class ListCommand extends RoseCommand {
 
@@ -37,14 +38,13 @@ public class ListCommand extends RoseCommand {
                 .create();
 
         VoucherManager manager = this.rosePlugin.getManager(VoucherManager.class);
-        GuiItem border = ItemBuilder.from(Material.BLACK_STAINED_GLASS_PANE).name(Component.text(" ")).asGuiItem();
-        for (int i = 0; i < 9; i++) gui.setItem(i, border);
-        for (int i = 36; i < 44; i++) gui.setItem(i, border);
+        for (int i = 0; i < 9; i++) gui.setItem(i, BORDER);
+        for (int i = 36; i < 44; i++) gui.setItem(i, BORDER);
 
         List<Voucher> vouchers = new ArrayList<>(manager.getVouchers().values());
         vouchers = vouchers.stream()
                 .sorted(Comparator.comparing(Voucher::getId))
-                .collect(Collectors.toList());
+                .toList();
 
         vouchers.forEach(voucher -> {
             ItemStack item = voucher.getDisplay();

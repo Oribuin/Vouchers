@@ -30,6 +30,13 @@ public class VoucherListener implements Listener {
 
         if (!Setting.REDEEM_WHILE_CROUCHING.getBoolean() && event.getPlayer().isSneaking()) return;
 
+        // If the voucher requires confirmation, open the confirmation GUI.
+        if (voucher.isConfirmRequired()) {
+            voucher.openConfirmation(event.getPlayer(), event.getItem());
+            return;
+        }
+
+        // Redeem the voucher regularly
         if (voucher.redeem(event.getPlayer())) {
             event.getItem().setAmount(event.getItem().getAmount() - 1);
         }

@@ -64,8 +64,8 @@ public enum ActionType {
      */
     private static ActionType match(String content) {
         try {
-            String action = content.substring(1, content.indexOf("]"));
-            return VoucherUtils.getEnum(ActionType.class, action, ActionType.MESSAGE);
+            String action = content.trim().substring(1, content.indexOf("]"));
+            return VoucherUtils.getEnum(ActionType.class, action, ActionType.CONSOLE);
         } catch (StringIndexOutOfBoundsException ignored) {
             return ActionType.MESSAGE;
         }

@@ -29,6 +29,21 @@ command-give-success: 'You have given #00B4DB%player% &fa x%amount% #00B4DBvouch
 # List Command
 command-list-description: 'Lists all vouchers'
 
+# Confirm GUI
+confirm-gui-title: 'Confirm Redeem'
+confirm-gui-redeem:
+  material: LIME_STAINED_GLASS_PANE
+  name: '&a&lRedeem'
+  slot: 5
+
+confirm-gui-cancel:
+  material: RED_STAINED_GLASS_PANE
+  name: '&c&lCancel'
+  slot: 3
+
+# List GUI
+list-gui-title: 'Plugin Vouchers'
+
 # Argument Handler Error Messages
 argument-handler-voucher: '[%input%] is not a valid voucher.'
 argument-handler-amount: '[%input%] is not a valid amount.'

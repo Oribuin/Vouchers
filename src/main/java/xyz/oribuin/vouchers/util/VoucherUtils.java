@@ -4,6 +4,8 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.utils.NMSUtil;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
+import dev.triumphteam.gui.guis.GuiItem;
+import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -30,6 +32,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 public final class VoucherUtils {
+
+    public static GuiItem BORDER = dev.triumphteam.gui.builder.item.ItemBuilder
+            .from(Material.BLACK_STAINED_GLASS_PANE)
+            .name(Component.text(" "))
+            .asGuiItem();
 
     public VoucherUtils() {
         throw new IllegalStateException("VouchersUtil is a utility class and cannot be instantiated.");
