@@ -2,6 +2,8 @@ package xyz.oribuin.vouchers.util;
 
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
+import dev.rosewood.rosegarden.hook.PlaceholderAPIHook;
+import dev.rosewood.rosegarden.utils.HexUtils;
 import dev.rosewood.rosegarden.utils.NMSUtil;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import dev.triumphteam.gui.guis.GuiItem;
@@ -28,7 +30,9 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public final class VoucherUtils {
@@ -62,6 +66,31 @@ public final class VoucherUtils {
         return Color.fromRGB(awtColor.getRed(), awtColor.getGreen(), awtColor.getBlue());
     }
 
+    /**
+     * Format a string with placeholders and color codes
+     *
+     * @param player The player to format the string for
+     * @param text   The string to format
+     * @return The formatted string
+     */
+    public static String format(Player player, String text) {
+        return format(player, text, StringPlaceholders.empty());
+    }
+
+    /**
+     * Format a string with placeholders and color codes
+     *
+     * @param player       The player to format the string for
+     * @param text         The text to format
+     * @param placeholders The placeholders to replace
+     * @return The formatted string
+     */
+    public static String format(Player player, String text, StringPlaceholders placeholders) {
+        if (text == null)
+            return null;
+
+        return HexUtils.colorify(PlaceholderAPIHook.applyPlaceholders(player, placeholders.apply(text)));
+    }
 
     /**
      * Deserialize an ItemStack from a CommentedConfigurationSection with placeholders
@@ -257,6 +286,18 @@ public final class VoucherUtils {
 
         return file;
     }
+    public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String name) {
+        if (name == null)
+            return null;
+
+        try {
+            return Enum.valueOf(enumClass, name.toUpperCase());
+        } catch (IllegalArgumentException ignored) {
+        }
+
+        return null;
+    }
+
 
     /**
      * Get an enum from a string value
@@ -278,5 +319,53 @@ public final class VoucherUtils {
         return def;
     }
 
+    /**
+     * Parse a list of strings from 1-1 to a stringlist
+     *
+     * @param list The list to parse
+     * @return The parsed list
+     */
+    @SuppressWarnings("unchecked")
+    public static List<Integer> parseList(List<String> list) {
+        List<Integer> newList = new ArrayList<>();
+        for (String s : list) {
+            String[] split = s.split("-");
+            if (split.length != 2) {
+                continue;
+            }
 
+            newList.addAll(getNumberRange(Integer.parseInt(split[0]), Integer.parseInt(split[1])));
+        }
+
+        return newList;
+    }
+
+    /**
+     * Get a range of numbers as a list
+     *
+     * @param start The start of the range
+     * @param end   The end of the range
+     * @return A list of numbers
+     */
+    public static List<Integer> getNumberRange(int start, int end) {
+        if (start == end) {
+            return List.of(start);
+        }
+
+        List<Integer> list = new ArrayList<>();
+        for (int i = start; i <= end; i++) {
+            list.add(i);
+        }
+
+        return list;
+    }
+
+    public static boolean isFolia() {
+        try {
+            Class.forName("io.papermc.paper.threadedregions.RegionizedServer");
+            return true;
+        } catch (ClassNotFoundException e) {
+            return false;
+        }
+    }
 }

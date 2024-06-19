@@ -1,0 +1,44 @@
+# title - The title of the GUI
+# rows - The amount of rows in the GUI
+#
+# The general options for the customising itemstacks.
+#  
+# material - The material of the reward.
+# amount - The amount of the reward.
+# name - The name of the reward.
+# lore - The logre of the reward, You can use the %description% placeholder to add the description of the tag.
+# glow - Whether the reward item should glow.
+# texture - The base64 texture of the reward item (Only for skulls), You can also use hdbLoader to load a texture if you have HeadDatabase installed.
+# potion-color - The color of the potion reward. (Only for potions)
+# model-data - The model data of the reward item. (Requires texture packs)
+# owner - The uuid of the player for the reward item (Only for skulls)
+# flags - The item flags for the reward item.
+# enchants - The enchantments for the reward item.
+
+# GUI Settings
+gui-settings:
+  title: Confirm Redeem
+  rows: 1
+  voucher-slot: 4
+
+# Confirm Voucher Redemption
+confirm-redeem:
+  material: LIME_STAINED_GLASS_PANE
+  amount: 1
+  name: '&#00ff00&lConfirm'
+  slot: 5
+
+cancel-redeem:
+  material: RED_STAINED_GLASS_PANE
+  amount: 1
+  name: '&#ff0000&lCancel'
+  slot: 3
+
+# Extra Items - Allows you to add extra items to the GUI [These are placed in the gui first] 
+extra-items:
+  border-item:
+    enabled: true
+    material: BLACK_STAINED_GLASS_PANE
+    name: ' '
+    slots:
+      - 0-8

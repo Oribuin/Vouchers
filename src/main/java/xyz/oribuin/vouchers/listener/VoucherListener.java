@@ -6,6 +6,8 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import xyz.oribuin.vouchers.VoucherPlugin;
+import xyz.oribuin.vouchers.gui.MenuProvider;
+import xyz.oribuin.vouchers.gui.impl.ConfirmMenu;
 import xyz.oribuin.vouchers.manager.ConfigurationManager.Setting;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.model.Voucher;
@@ -32,7 +34,7 @@ public class VoucherListener implements Listener {
 
         // If the voucher requires confirmation, open the confirmation GUI.
         if (voucher.isConfirmRequired()) {
-            voucher.openConfirmation(event.getPlayer(), event.getItem());
+            MenuProvider.get(ConfirmMenu.class).open(event.getPlayer(), voucher, event.getItem());
             return;
         }
 

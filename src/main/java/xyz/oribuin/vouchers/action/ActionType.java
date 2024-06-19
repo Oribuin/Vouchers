@@ -5,6 +5,7 @@ import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import xyz.oribuin.vouchers.action.impl.BroadcastAction;
+import xyz.oribuin.vouchers.action.impl.CloseAction;
 import xyz.oribuin.vouchers.action.impl.ConsoleAction;
 import xyz.oribuin.vouchers.action.impl.MessageAction;
 import xyz.oribuin.vouchers.action.impl.PlayerAction;
@@ -17,7 +18,7 @@ public enum ActionType {
     CONSOLE(new ConsoleAction()),
     PLAYER(new PlayerAction()),
     BROADCAST(new BroadcastAction()),
-    ;
+    CLOSE(new CloseAction());
 
     private final Action action;
 

@@ -1,14 +1,6 @@
 package xyz.oribuin.vouchers.model;
 
-import dev.rosewood.rosegarden.utils.HexUtils;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
-import dev.triumphteam.gui.builder.item.ItemBuilder;
-import dev.triumphteam.gui.guis.Gui;
-import dev.triumphteam.gui.guis.GuiItem;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextColor;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -17,16 +9,12 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import xyz.oribuin.vouchers.VoucherPlugin;
 import xyz.oribuin.vouchers.action.ActionType;
-import xyz.oribuin.vouchers.manager.LocaleManager;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.requirement.Requirement;
 import xyz.oribuin.vouchers.util.VoucherUtils;
 
-import static xyz.oribuin.vouchers.util.VoucherUtils.BORDER;
-
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicBoolean;
 
 public class Voucher {
 
@@ -127,44 +115,6 @@ public class Voucher {
         container.set(DATA_KEY, PersistentDataType.STRING, this.id.toLowerCase());
         itemStack.setItemMeta(meta);
         return itemStack;
-    }
-
-
-    /**
-     * Open the confirmation GUI for the player.
-     *
-     * @param player The player to open the GUI for.
-     */
-    public void openConfirmation(Player player, ItemStack item) {
-        LocaleManager locale = VoucherPlugin.get().getManager(LocaleManager.class);
-
-        AtomicBoolean hasRan = new AtomicBoolean(false);
-        Gui gui = Gui.gui()
-                .disableAllInteractions()
-                .title(Component.text("Confirm Redeem"))
-                .rows(1)
-                .create();
-
-        gui.getFiller().fill(BORDER);
-        gui.setItem(4, new GuiItem(this.display.clone()));
-        gui.setItem(3, ItemBuilder.from(Material.RED_STAINED_GLASS_PANE)
-                .name(Component.text(HexUtils.colorify("&c&lCancel")))
-                .asGuiItem(event -> gui.close(player)));
-
-        gui.setItem(5, ItemBuilder.from(Material.LIME_STAINED_GLASS_PANE)
-                .name(Component.text(HexUtils.colorify("&a&lConfirm")))
-                .asGuiItem(event -> {
-                    if (hasRan.get()) return;
-                    hasRan.set(true);
-
-                    if (this.redeem(player)) {
-                        item.setAmount(item.getAmount() - 1);
-                    }
-
-                    gui.close(player);
-                }));
-
-        gui.open(player);
     }
 
     public String getId() {
