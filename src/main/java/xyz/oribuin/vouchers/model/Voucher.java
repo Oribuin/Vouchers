@@ -110,6 +110,7 @@ public class Voucher {
         if (this.cooldown > 0) {
             manager.addCooldown(player.getUniqueId(), this);
         }
+
         return true;
     }
 
@@ -156,8 +157,10 @@ public class Voucher {
                     if (hasRan.get()) return;
                     hasRan.set(true);
 
-                    item.setAmount(item.getAmount() - 1);
-                    this.redeem(player);
+                    if (this.redeem(player)) {
+                        item.setAmount(item.getAmount() - 1);
+                    }
+
                     gui.close(player);
                 }));
 
