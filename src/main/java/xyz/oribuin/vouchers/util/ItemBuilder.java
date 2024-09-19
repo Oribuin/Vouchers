@@ -19,20 +19,41 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
-@SuppressWarnings({"unused", "deprecation"})
+
+@SuppressWarnings({ "unused", "deprecation" })
 public class ItemBuilder {
 
     private final ItemStack item;
+    private final ItemMeta meta;
 
+    /**
+     * Create a new Item Builder with a Material.
+     *
+     * @param material The Material.
+     */
     public ItemBuilder(Material material) {
         this.item = new ItemStack(material);
+        this.meta = this.item.getItemMeta();
     }
 
+    /**
+     * Create a new Item Builder with an existing ItemStack.
+     *
+     * @param item The ItemStack.
+     */
     public ItemBuilder(ItemStack item) {
         this.item = item.clone();
+        this.meta = this.item.getItemMeta();
     }
 
-    public ItemBuilder setMaterial(Material material) {
+    /**
+     * Set the ItemStack's Material.
+     *
+     * @param material The Material.
+     *
+     * @return Item.Builder.
+     */
+    public ItemBuilder material(Material material) {
         this.item.setType(material);
         return this;
     }
@@ -41,16 +62,12 @@ public class ItemBuilder {
      * Set the ItemStack's Display Name.
      *
      * @param text The text.
+     *
      * @return Item.Builder.
      */
     public ItemBuilder name(@Nullable String text) {
-        final ItemMeta meta = this.item.getItemMeta();
-        if (meta == null || text == null)
-            return this;
-
-        meta.setDisplayName(text);
-        this.item.setItemMeta(meta);
-
+        if (meta == null) return this;
+        this.meta.setDisplayName(text);
         return this;
     }
 
@@ -58,15 +75,12 @@ public class ItemBuilder {
      * Set the ItemStack's Lore
      *
      * @param lore The lore
+     *
      * @return Item.Builder.
      */
     public ItemBuilder lore(@Nullable List<String> lore) {
-        final ItemMeta meta = this.item.getItemMeta();
-        if (meta == null || lore == null)
-            return this;
-
-        meta.setLore(lore);
-        this.item.setItemMeta(meta);
+        if (meta == null) return this;
+        this.meta.setLore(lore);
         return this;
     }
 
@@ -74,6 +88,7 @@ public class ItemBuilder {
      * Set the ItemStack's Lore
      *
      * @param lore The lore
+     *
      * @return Item.Builder.
      */
     public ItemBuilder lore(@Nullable String... lore) {
@@ -84,6 +99,7 @@ public class ItemBuilder {
      * Set the ItemStack amount.
      *
      * @param amount The amount of items.
+     *
      * @return Item.Builder
      */
     public ItemBuilder amount(int amount) {
@@ -96,15 +112,12 @@ public class ItemBuilder {
      *
      * @param ench  The enchantment.
      * @param level The level of the enchantment
+     *
      * @return Item.Builder
      */
     public ItemBuilder enchant(Enchantment ench, int level) {
-        final ItemMeta meta = this.item.getItemMeta();
         if (meta == null) return this;
-
-        meta.addEnchant(ench, level, true);
-        this.item.setItemMeta(meta);
-
+        this.meta.addEnchant(ench, level, true);
         return this;
     }
 
@@ -112,18 +125,12 @@ public class ItemBuilder {
      * Add multiple enchantments to an item.
      *
      * @param enchantments The enchantments.
+     *
      * @return Item.Builder
      */
 
     public ItemBuilder enchant(Map<Enchantment, Integer> enchantments) {
-        final ItemMeta meta = this.item.getItemMeta();
-        if (meta == null) return this;
-
-        for (Map.Entry<Enchantment, Integer> entry : enchantments.entrySet()) {
-            meta.addEnchant(entry.getKey(), entry.getValue(), true);
-        }
-
-        this.item.setItemMeta(meta);
+        enchantments.forEach(this::enchant);
         return this;
     }
 
@@ -131,6 +138,7 @@ public class ItemBuilder {
      * Remove an enchantment from an Item
      *
      * @param ench The enchantment.
+     *
      * @return Item.Builder
      */
     public ItemBuilder remove(Enchantment ench) {
@@ -142,16 +150,12 @@ public class ItemBuilder {
      * Remove and reset the ItemStack's Flags
      *
      * @param flags The ItemFlags.
+     *
      * @return Item.Builder
      */
     public ItemBuilder flags(ItemFlag[] flags) {
-        final ItemMeta meta = this.item.getItemMeta();
         if (meta == null) return this;
-
-        meta.removeItemFlags(ItemFlag.values());
-        meta.addItemFlags(flags);
-        this.item.setItemMeta(meta);
-
+        this.meta.addItemFlags(ItemFlag.values());
         return this;
     }
 
@@ -160,14 +164,12 @@ public class ItemBuilder {
      * Change the item's unbreakable status.
      *
      * @param unbreakable true if unbreakable
+     *
      * @return Item.Builder
      */
     public ItemBuilder unbreakable(boolean unbreakable) {
-        final ItemMeta meta = this.item.getItemMeta();
         if (meta == null) return this;
-
-        meta.setUnbreakable(unbreakable);
-        item.setItemMeta(meta);
+        this.meta.setUnbreakable(unbreakable);
         return this;
     }
 
@@ -178,14 +180,10 @@ public class ItemBuilder {
      */
     public ItemBuilder glow(boolean b) {
         if (!b) return this;
-
-        final ItemMeta meta = this.item.getItemMeta();
         if (meta == null) return this;
 
-        meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
-        meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
-        this.item.setItemMeta(meta);
-
+        this.meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+        this.meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         return this;
     }
 
@@ -193,18 +191,16 @@ public class ItemBuilder {
      * Apply a texture to a skull.
      *
      * @param texture The texture.
+     *
      * @return Item.Builder
      */
     public ItemBuilder texture(@Nullable String texture) {
         if (item.getType() != Material.PLAYER_HEAD || texture == null)
             return this;
 
-        final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-        if (skullMeta == null)
-            return this;
+        if (!(this.meta instanceof SkullMeta skullMeta)) return this;
 
         SkullUtils.setSkullTexture(skullMeta, texture);
-        this.item.setItemMeta(skullMeta);
         return this;
     }
 
@@ -212,69 +208,37 @@ public class ItemBuilder {
      * Set the owner of a skull.
      *
      * @param owner The owner.
+     *
      * @return Item.Builder
      */
     public ItemBuilder owner(OfflinePlayer owner) {
-        if (item.getType() != Material.PLAYER_HEAD)
-            return this;
-
-        final SkullMeta skullMeta = (SkullMeta) item.getItemMeta();
-        if (skullMeta == null || owner == null || skullMeta.getOwningPlayer() != null)
-            return this;
+        if (item.getType() != Material.PLAYER_HEAD) return this;
+        if (owner == null) return this;
+        if (!(this.meta instanceof SkullMeta skullMeta)) return this;
 
         skullMeta.setOwningPlayer(owner);
-        this.item.setItemMeta(skullMeta);
         return this;
     }
 
-    /**
-     * Change the item's model data.
-     *
-     * @param model The model data.
-     * @return Item.Builder
-     */
     public ItemBuilder model(int model) {
-        final ItemMeta meta = this.item.getItemMeta();
-        if (meta == null || model <= 0)
-            return this;
-
-        meta.setCustomModelData(model);
-        this.item.setItemMeta(meta);
+        this.meta.setCustomModelData(model);
         return this;
     }
 
-    /**
-     * Add a potion effect to an item.
-     *
-     * @param effectType The effect type.
-     * @param duration   The duration of the effect.
-     * @param amp        The amplifier of the effect.
-     * @return Item.Builder
-     */
     public ItemBuilder potion(PotionEffectType effectType, int duration, int amp) {
-        if (!(this.item.getItemMeta() instanceof PotionMeta meta))
-            return this;
+        if (!(this.meta instanceof PotionMeta potionMeta)) return this;
 
-        meta.addCustomEffect(new PotionEffect(effectType, duration, amp), true);
-        this.item.setItemMeta(meta);
+        potionMeta.addCustomEffect(new PotionEffect(effectType, duration, amp), true);
         return this;
     }
 
-    /**
-     * Set the item's color.
-     *
-     * @param color The color.
-     * @return Item.Builder
-     */
     public ItemBuilder color(Color color) {
-        if (this.item.getItemMeta() instanceof PotionMeta meta) {
-            meta.setColor(color);
-            this.item.setItemMeta(meta);
+        if (this.meta instanceof PotionMeta potionMeta) {
+            potionMeta.setColor(color);
         }
 
-        if (this.item.getItemMeta() instanceof LeatherArmorMeta meta) {
-            meta.setColor(color);
-            this.item.setItemMeta(meta);
+        if (this.item.getItemMeta() instanceof LeatherArmorMeta leatherArmorMeta) {
+            leatherArmorMeta.setColor(color);
         }
 
         return this;
@@ -286,6 +250,8 @@ public class ItemBuilder {
      * @return The ItemStack
      */
     public ItemStack build() {
+        if (this.meta != null)
+            this.item.setItemMeta(this.meta);
         return this.item;
     }
 

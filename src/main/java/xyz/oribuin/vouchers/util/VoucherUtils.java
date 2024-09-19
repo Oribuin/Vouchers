@@ -7,7 +7,6 @@ import dev.rosewood.rosegarden.utils.HexUtils;
 import dev.rosewood.rosegarden.utils.NMSUtil;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
 import dev.triumphteam.gui.guis.GuiItem;
-import net.kyori.adventure.text.Component;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.Material;
@@ -37,10 +36,11 @@ import java.util.Map;
 
 public final class VoucherUtils {
 
-    public static GuiItem BORDER = dev.triumphteam.gui.builder.item.ItemBuilder
-            .from(Material.BLACK_STAINED_GLASS_PANE)
-            .name(Component.text(" "))
-            .asGuiItem();
+    public static GuiItem BORDER = new GuiItem(
+            new ItemBuilder(Material.BLACK_STAINED_GLASS_PANE)
+                    .name(" ")
+                    .build()
+    );
 
     public VoucherUtils() {
         throw new IllegalStateException("VouchersUtil is a utility class and cannot be instantiated.");
@@ -50,6 +50,7 @@ public final class VoucherUtils {
      * Get a bukkit color from a hex code
      *
      * @param hex The hex code
+     *
      * @return The bukkit color
      */
     public static Color fromHex(String hex) {
@@ -71,6 +72,7 @@ public final class VoucherUtils {
      *
      * @param player The player to format the string for
      * @param text   The string to format
+     *
      * @return The formatted string
      */
     public static String format(Player player, String text) {
@@ -83,6 +85,7 @@ public final class VoucherUtils {
      * @param player       The player to format the string for
      * @param text         The text to format
      * @param placeholders The placeholders to replace
+     *
      * @return The formatted string
      */
     public static String format(Player player, String text, StringPlaceholders placeholders) {
@@ -99,6 +102,7 @@ public final class VoucherUtils {
      * @param sender       The CommandSender to apply placeholders from
      * @param key          The key to deserialize from
      * @param placeholders The placeholders to apply
+     *
      * @return The deserialized ItemStack
      */
     @Nullable
@@ -162,6 +166,7 @@ public final class VoucherUtils {
      *
      * @param section The section to deserialize from
      * @param key     The key to deserialize from
+     *
      * @return The deserialized ItemStack
      */
     @Nullable
@@ -175,6 +180,7 @@ public final class VoucherUtils {
      * @param section The section to deserialize from
      * @param sender  The CommandSender to apply placeholders from
      * @param key     The key to deserialize from
+     *
      * @return The deserialized ItemStack
      */
     @Nullable
@@ -186,6 +192,7 @@ public final class VoucherUtils {
      * Parse an integer from an object safely
      *
      * @param object The object
+     *
      * @return The integer
      */
     private static int toInt(String object) {
@@ -200,6 +207,7 @@ public final class VoucherUtils {
      * Convert a string to a duration
      *
      * @param input The input string
+     *
      * @return The duration
      */
     public static Duration getTime(String input) {
@@ -231,6 +239,7 @@ public final class VoucherUtils {
      * Format a time in milliseconds into a string
      *
      * @param time Time in milliseconds
+     *
      * @return Formatted time
      */
     public static String formatTime(long time) {
@@ -260,6 +269,7 @@ public final class VoucherUtils {
      *
      * @param rosePlugin The plugin
      * @param folders    The folders
+     *
      * @return The file
      */
     @NotNull
@@ -286,6 +296,7 @@ public final class VoucherUtils {
 
         return file;
     }
+
     public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String name) {
         if (name == null)
             return null;
@@ -305,6 +316,7 @@ public final class VoucherUtils {
      * @param enumClass The enum class
      * @param name      The name of the enum
      * @param <T>       The enum type
+     *
      * @return The enum
      */
     public static <T extends Enum<T>> T getEnum(Class<T> enumClass, String name, T def) {
@@ -323,6 +335,7 @@ public final class VoucherUtils {
      * Parse a list of strings from 1-1 to a stringlist
      *
      * @param list The list to parse
+     *
      * @return The parsed list
      */
     @SuppressWarnings("unchecked")
@@ -345,6 +358,7 @@ public final class VoucherUtils {
      *
      * @param start The start of the range
      * @param end   The end of the range
+     *
      * @return A list of numbers
      */
     public static List<Integer> getNumberRange(int start, int end) {

@@ -6,7 +6,6 @@ import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.CommentedConfigurationSection;
 import dev.rosewood.rosegarden.config.CommentedFileConfiguration;
 import dev.rosewood.rosegarden.manager.Manager;
-import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -58,7 +57,7 @@ public class VoucherManager extends Manager {
     }
 
     /**
-     * Load all of the vouchers from a folder.
+     * Load all the vouchers from a folder.
      *
      * @param folder The folder to load from.
      */
