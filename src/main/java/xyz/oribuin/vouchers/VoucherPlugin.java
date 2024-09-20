@@ -1,12 +1,14 @@
 package xyz.oribuin.vouchers;
 
 import dev.rosewood.rosegarden.RosePlugin;
+import dev.rosewood.rosegarden.config.RoseSetting;
 import dev.rosewood.rosegarden.manager.Manager;
 import org.bukkit.Bukkit;
+import org.jetbrains.annotations.NotNull;
+import xyz.oribuin.vouchers.config.Settings;
 import xyz.oribuin.vouchers.gui.MenuProvider;
 import xyz.oribuin.vouchers.listener.VoucherListener;
 import xyz.oribuin.vouchers.manager.CommandManager;
-import xyz.oribuin.vouchers.manager.ConfigurationManager;
 import xyz.oribuin.vouchers.manager.LocaleManager;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 
@@ -18,7 +20,6 @@ public class VoucherPlugin extends RosePlugin {
 
     public VoucherPlugin() {
         super(114633, 20798,
-                ConfigurationManager.class,
                 null,
                 LocaleManager.class,
                 CommandManager.class
@@ -49,8 +50,13 @@ public class VoucherPlugin extends RosePlugin {
     }
 
     @Override
-    protected List<Class<? extends Manager>> getManagerLoadPriority() {
+    protected @NotNull List<Class<? extends Manager>> getManagerLoadPriority() {
         return List.of(VoucherManager.class);
+    }
+
+    @Override
+    protected @NotNull List<RoseSetting<?>> getRoseConfigSettings() {
+        return Settings.getKeys();
     }
 
 }

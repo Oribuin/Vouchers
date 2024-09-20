@@ -6,9 +6,9 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import xyz.oribuin.vouchers.VoucherPlugin;
+import xyz.oribuin.vouchers.config.Settings;
 import xyz.oribuin.vouchers.gui.MenuProvider;
 import xyz.oribuin.vouchers.gui.impl.ConfirmMenu;
-import xyz.oribuin.vouchers.manager.ConfigurationManager.Setting;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.model.Voucher;
 
@@ -30,7 +30,7 @@ public class VoucherListener implements Listener {
         if (voucher == null) return;
         event.setCancelled(true);
 
-        if (!Setting.REDEEM_WHILE_CROUCHING.getBoolean() && event.getPlayer().isSneaking()) return;
+        if (!Settings.REDEEM_WHILE_CROUCHING.get() && event.getPlayer().isSneaking()) return;
 
         // If the voucher requires confirmation, open the confirmation GUI.
         if (voucher.isConfirmRequired()) {

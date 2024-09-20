@@ -1,11 +1,13 @@
 package xyz.oribuin.vouchers.manager;
 
 import dev.rosewood.rosegarden.RosePlugin;
-import dev.rosewood.rosegarden.command.framework.RoseCommandWrapper;
+import dev.rosewood.rosegarden.command.framework.BaseRoseCommand;
 import dev.rosewood.rosegarden.manager.AbstractCommandManager;
-import xyz.oribuin.vouchers.command.VoucherCommandWrapper;
+import org.jetbrains.annotations.NotNull;
+import xyz.oribuin.vouchers.command.BaseCommand;
 
 import java.util.List;
+import java.util.function.Function;
 
 public class CommandManager extends AbstractCommandManager {
 
@@ -14,13 +16,8 @@ public class CommandManager extends AbstractCommandManager {
     }
 
     @Override
-    public List<Class<? extends RoseCommandWrapper>> getRootCommands() {
-        return List.of(VoucherCommandWrapper.class);
-    }
-
-    @Override
-    public List<String> getArgumentHandlerPackages() {
-        return List.of("xyz.oribuin.vouchers.command.argument");
+    public @NotNull List<Function<RosePlugin, BaseRoseCommand>> getRootCommands() {
+        return List.of(BaseCommand::new);
     }
 
 }

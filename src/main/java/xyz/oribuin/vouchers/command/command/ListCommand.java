@@ -1,10 +1,11 @@
 package xyz.oribuin.vouchers.command.command;
 
 import dev.rosewood.rosegarden.RosePlugin;
+import dev.rosewood.rosegarden.command.argument.ArgumentHandlers;
+import dev.rosewood.rosegarden.command.framework.ArgumentsDefinition;
+import dev.rosewood.rosegarden.command.framework.BaseRoseCommand;
 import dev.rosewood.rosegarden.command.framework.CommandContext;
-import dev.rosewood.rosegarden.command.framework.RoseCommand;
-import dev.rosewood.rosegarden.command.framework.RoseCommandWrapper;
-import dev.rosewood.rosegarden.command.framework.annotation.Optional;
+import dev.rosewood.rosegarden.command.framework.CommandInfo;
 import dev.rosewood.rosegarden.command.framework.annotation.RoseExecutable;
 import dev.triumphteam.gui.builder.item.ItemBuilder;
 import dev.triumphteam.gui.guis.Gui;
@@ -17,20 +18,20 @@ import org.bukkit.inventory.ItemStack;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.model.Voucher;
 
-import static xyz.oribuin.vouchers.util.VoucherUtils.BORDER;
-
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 
-public class ListCommand extends RoseCommand {
+import static xyz.oribuin.vouchers.util.VoucherUtils.BORDER;
 
-    public ListCommand(RosePlugin rosePlugin, RoseCommandWrapper parent) {
-        super(rosePlugin, parent);
+public class ListCommand extends BaseRoseCommand {
+
+    public ListCommand(RosePlugin rosePlugin) {
+        super(rosePlugin);
     }
 
     @RoseExecutable
-    public void execute(CommandContext context, @Optional Integer page) {
+    public void execute(CommandContext context, Integer page) {
         PaginatedGui gui = Gui.paginated()
                 .title(Component.text("Plugin Vouchers"))
                 .disableAllInteractions()
@@ -49,8 +50,7 @@ public class ListCommand extends RoseCommand {
         vouchers.forEach(voucher -> {
             ItemStack item = voucher.getDisplay();
 
-            GuiItem guiItem = ItemBuilder.from(item).asGuiItem(event -> event
-                    .getWhoClicked()
+            GuiItem guiItem = new GuiItem(item, event -> event.getWhoClicked()
                     .getInventory()
                     .addItem(voucher.getDisplay())
             );
@@ -64,23 +64,15 @@ public class ListCommand extends RoseCommand {
     }
 
     @Override
-    protected String getDefaultName() {
-        return "list";
-    }
-
-    @Override
-    public String getDescriptionKey() {
-        return "command-list-description";
-    }
-
-    @Override
-    public String getRequiredPermission() {
-        return "vouchers.list";
-    }
-
-    @Override
-    public boolean isPlayerOnly() {
-        return true;
+    protected CommandInfo createCommandInfo() {
+        return CommandInfo.builder("list")
+                .descriptionKey("command-list-description")
+                .permission("vouchers.list")
+                .playerOnly(true)
+                .arguments(ArgumentsDefinition.builder()
+                        .optional("page", ArgumentHandlers.INTEGER)
+                        .build())
+                .build();
     }
 
 }

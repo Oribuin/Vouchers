@@ -1,27 +1,29 @@
 package xyz.oribuin.vouchers.command.argument;
 
-import dev.rosewood.rosegarden.RosePlugin;
-import dev.rosewood.rosegarden.command.framework.ArgumentParser;
-import dev.rosewood.rosegarden.command.framework.RoseCommandArgumentHandler;
-import dev.rosewood.rosegarden.command.framework.RoseCommandArgumentInfo;
+import dev.rosewood.rosegarden.command.framework.Argument;
+import dev.rosewood.rosegarden.command.framework.ArgumentHandler;
+import dev.rosewood.rosegarden.command.framework.CommandContext;
+import dev.rosewood.rosegarden.command.framework.InputIterator;
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
+import xyz.oribuin.vouchers.VoucherPlugin;
 import xyz.oribuin.vouchers.manager.VoucherManager;
 import xyz.oribuin.vouchers.model.Voucher;
 
-import java.util.ArrayList;
 import java.util.List;
 
-public class VoucherArgumentHandler extends RoseCommandArgumentHandler<Voucher> {
+public class VoucherArgumentHandler extends ArgumentHandler<Voucher> {
 
-    public VoucherArgumentHandler(RosePlugin rosePlugin) {
-        super(rosePlugin, Voucher.class);
+    public VoucherArgumentHandler() {
+        super(Voucher.class);
     }
 
     @Override
-    protected Voucher handleInternal(RoseCommandArgumentInfo argumentInfo, ArgumentParser argumentParser) throws HandledArgumentException {
-        String input = argumentParser.next();
+    public Voucher handle(CommandContext commandContext, Argument argument, InputIterator inputIterator) throws HandledArgumentException {
+        String input = inputIterator.next();
 
-        Voucher result = this.rosePlugin.getManager(VoucherManager.class).getVoucher(input);
+        Voucher result = VoucherPlugin.get().getManager(VoucherManager.class)
+                .getVoucher(input);
+
         if (result != null) {
             return result;
         }
@@ -30,10 +32,12 @@ public class VoucherArgumentHandler extends RoseCommandArgumentHandler<Voucher> 
     }
 
     @Override
-    protected List<String> suggestInternal(RoseCommandArgumentInfo argumentInfo, ArgumentParser argumentParser) {
-        argumentParser.next();
-
-        return new ArrayList<>(this.rosePlugin.getManager(VoucherManager.class).getVouchers().keySet());
+    public List<String> suggest(CommandContext commandContext, Argument argument, String[] strings) {
+        return VoucherPlugin.get().getManager(VoucherManager.class)
+                .getVouchers()
+                .keySet()
+                .stream()
+                .toList();
     }
 
 }
