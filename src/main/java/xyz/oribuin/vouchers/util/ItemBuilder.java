@@ -182,7 +182,7 @@ public class ItemBuilder {
         if (!b) return this;
         if (meta == null) return this;
 
-        this.meta.addEnchant(Enchantment.PROTECTION_ENVIRONMENTAL, 1, true);
+        this.meta.addEnchant(Enchantment.KNOCKBACK, 1, true);
         this.meta.addItemFlags(ItemFlag.HIDE_ENCHANTS);
         return this;
     }
