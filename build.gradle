@@ -38,8 +38,6 @@ repositories {
 
 dependencies {
     api "dev.rosewood:rosegarden:${gardenVersion}"
-    implementation 'xyz.oribuin:biome-adapter:1.0'
-//    implementation 'xyz.oribuin:biome-adapter:1.0'
 
     // Decide whether you want to use Spigot or Paper API (Paper is recommended)
     compileOnly "io.papermc.paper:paper-api:${spigotVersion}-R0.1-SNAPSHOT"
