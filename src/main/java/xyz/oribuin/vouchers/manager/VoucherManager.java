@@ -77,46 +77,51 @@ public class VoucherManager extends Manager {
     public void load(File file) {
         CommentedConfigurationSection section = CommentedFileConfiguration.loadConfiguration(file);
         section.getKeys(false).forEach(key -> {
-            ItemStack display = VoucherUtils.deserialize(section, key + ".item");
+            try {
 
-            if (display == null) {
-                this.rosePlugin.getLogger().warning("Unable to load voucher item with key '" + key + "'.");
-                return;
+                ItemStack display = VoucherUtils.deserialize(section, key + ".item");
+
+                if (display == null) {
+                    this.rosePlugin.getLogger().warning("Unable to load voucher item with key '" + key + "'.");
+                    return;
+                }
+
+                // Load all the basic easy values from the config
+                Voucher voucher = new Voucher(key, display);
+
+                // Load all the requirements from the config
+                List<Requirement> requirements = new ArrayList<>();
+                CommentedConfigurationSection requirementSection = section.getConfigurationSection(key + ".requirements");
+                if (requirementSection != null) {
+                    requirementSection.getKeys(false).forEach(id -> {
+                        String type = requirementSection.getString(id + ".type");
+                        Object input = requirementSection.get(id + ".input");
+                        Object output = requirementSection.get(id + ".output");
+
+                        if (type == null || input == null) {
+                            this.rosePlugin.getLogger().warning("Unable to load requirement '" + id + "' for voucher '" + id + "'. Invalid type or input.");
+                            return;
+                        }
+
+                        Requirement requirement = RequirementType.create(type, input, output);
+                        requirements.add(requirement);
+                    });
+
+                    voucher.setRequirements(requirements);
+                    voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
+                }
+
+                // Load all the basic easy values from the config
+                voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
+                voucher.setCommands(section.getStringList(key + ".commands"));
+                voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
+                voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
+                voucher.setConfirmRequired(section.getBoolean(key + ".require-confirm", false));
+
+                this.vouchers.put(key.toLowerCase(), voucher);
+            } catch (Exception ex) {
+                this.rosePlugin.getLogger().severe("Failed to load voucher[" + key + "] in file[" + file.getName() + "] due to error: " + ex.getMessage());
             }
-
-            // Load all the basic easy values from the config
-            Voucher voucher = new Voucher(key, display);
-
-            // Load all the requirements from the config
-            List<Requirement> requirements = new ArrayList<>();
-            CommentedConfigurationSection requirementSection = section.getConfigurationSection(key + ".requirements");
-            if (requirementSection != null) {
-                requirementSection.getKeys(false).forEach(id -> {
-                    String type = requirementSection.getString(id + ".type");
-                    Object input = requirementSection.get(id + ".input");
-                    Object output = requirementSection.get(id + ".output");
-
-                    if (type == null || input == null) {
-                        this.rosePlugin.getLogger().warning("Unable to load requirement '" + id + "' for voucher '" + id + "'. Invalid type or input.");
-                        return;
-                    }
-
-                    Requirement requirement = RequirementType.create(type, input, output);
-                    requirements.add(requirement);
-                });
-
-                voucher.setRequirements(requirements);
-                voucher.setDenyCommands(section.getStringList(key + ".deny-commands"));
-            }
-
-            // Load all the basic easy values from the config
-            voucher.setRequirementMin(section.getInt(key + ".requirement-min", requirements.size()));
-            voucher.setCommands(section.getStringList(key + ".commands"));
-            voucher.setCooldown(VoucherUtils.getTime(section.getString(key + ".cooldown")).toMillis());
-            voucher.setCooldownActions(section.getStringList(key + ".on-cooldown"));
-            voucher.setConfirmRequired(section.getBoolean(key + ".require-confirm", false));
-
-            this.vouchers.put(key.toLowerCase(), voucher);
         });
 
     }

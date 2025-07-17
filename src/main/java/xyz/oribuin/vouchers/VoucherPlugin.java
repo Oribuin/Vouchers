@@ -2,9 +2,11 @@ package xyz.oribuin.vouchers;
 
 import dev.rosewood.rosegarden.RosePlugin;
 import dev.rosewood.rosegarden.config.RoseSetting;
+import dev.rosewood.rosegarden.config.SettingHolder;
 import dev.rosewood.rosegarden.manager.Manager;
 import org.bukkit.Bukkit;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import xyz.oribuin.vouchers.config.Settings;
 import xyz.oribuin.vouchers.gui.MenuProvider;
 import xyz.oribuin.vouchers.listener.VoucherListener;
@@ -55,8 +57,7 @@ public class VoucherPlugin extends RosePlugin {
     }
 
     @Override
-    protected @NotNull List<RoseSetting<?>> getRoseConfigSettings() {
-        return Settings.getKeys();
+    protected @Nullable SettingHolder getRoseConfigSettingHolder() {
+        return new Settings();
     }
-
 }

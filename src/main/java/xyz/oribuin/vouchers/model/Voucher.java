@@ -92,7 +92,7 @@ public class Voucher {
         }
 
         // Run all the commands and actions
-        ActionType.run(player, this.commands);
+        VoucherPlugin.get().getScheduler().runTask(() -> ActionType.run(player, this.commands));
 
         // Add the cooldown
         if (this.cooldown > 0) {

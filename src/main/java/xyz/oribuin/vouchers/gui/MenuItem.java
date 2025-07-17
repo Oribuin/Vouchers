@@ -86,9 +86,9 @@ public class MenuItem {
         if (!this.isConditional())
             return;
 
-        if (this.clickSound == null && this.customItem == null) {
-            this.clickSound = VoucherUtils.getEnum(Sound.class, this.config.getString(this.itemPath + ".sound"));
-        }
+//        if (this.clickSound == null && this.customItem == null) {
+//            this.clickSound = VoucherUtils.getEnum(Sound.class, this.config.getString(this.itemPath + ".sound"));
+//        }
 
         if (this.config.get(this.itemPath + ".actions") != null) {
             this.customActions.addAll(this.config.getStringList(this.itemPath + ".actions"));
