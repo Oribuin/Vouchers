@@ -4,7 +4,7 @@ import javax.swing.GroupLayout
 plugins {
     `java-library`
     `maven-publish`
-    id("com.gradleup.shadow") version "8.3.5"
+    id("com.gradleup.shadow") version "9.4.2"
 }
 
 group = "xyz.oribuin"
@@ -16,7 +16,7 @@ java {
     
     disableAutoTargetJvm()
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(21))
+        languageVersion.set(JavaLanguageVersion.of(25))
     }
 }
 
@@ -35,13 +35,13 @@ repositories {
 }
 
 dependencies {
-    api("dev.rosewood:rosegarden:1.5.1")
-    api("dev.triumphteam:triumph-gui:3.1.11") {  // https://mf.mattstudios.me/triumph-gui/introduction
+    api("dev.rosewood:rosegarden:1.5.7")
+    api("dev.triumphteam:triumph-gui:3.1.7") {  // https://mf.mattstudios.me/triumph-gui/introduction
         exclude(group = "com.google.code.gson", module = "gson")
         exclude(group = "net.kyori", module = "*")
     }
 
-    compileOnly("io.papermc.paper:paper-api:1.21.3-R0.1-SNAPSHOT")
+    compileOnly("io.papermc.paper:paper-api:26.2.build.35-alpha")
     compileOnly("org.jetbrains:annotations:23.0.0")
     compileOnly("me.clip:placeholderapi:2.11.6")
     compileOnly("org.black_ixx:playerpoints:3.2.6")

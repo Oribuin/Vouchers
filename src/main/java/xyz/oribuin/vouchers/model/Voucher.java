@@ -1,6 +1,7 @@
 package xyz.oribuin.vouchers.model;
 
 import dev.rosewood.rosegarden.utils.StringPlaceholders;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
@@ -86,13 +87,13 @@ public class Voucher {
             }
 
             if (evaluated < this.requirementMin) {
-                ActionType.run(player, this.denyCommands);
+                Bukkit.getScheduler().runTask(VoucherPlugin.get(), () -> ActionType.run(player, this.denyCommands));
                 return false;
             }
         }
 
         // Run all the commands and actions
-        VoucherPlugin.get().getScheduler().runTask(() -> ActionType.run(player, this.commands));
+        Bukkit.getScheduler().runTask(VoucherPlugin.get(), () -> ActionType.run(player, this.commands));
 
         // Add the cooldown
         if (this.cooldown > 0) {
